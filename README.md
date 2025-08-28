@@ -11,3 +11,51 @@ Curso original: https://cursos.devtalles.com/courses/take/django/lessons/6469287
 # Sección 2: Fundamentos necesarios de Python
 
 
+### Funciones de orden superior (High Order Function)
+
+```py
+def require_auth(func):
+    def wrapper(user):
+        if user.lower() == "admin":
+            return func(user)
+        else:
+            return "Acceso denegado"
+
+    return wrapper
+
+
+def admin_dashboard(user):
+    return f"Bienvenido al panel, {user}"
+
+
+auth_view_dashboard = require_auth(admin_dashboard)
+
+print(auth_view_dashboard("Admin"))
+print(auth_view_dashboard("Invitado"))
+```
+
+### Decoradores
+
+```py
+def require_auth(func):
+    def wrapper(user):
+        if user.lower() == "admin":
+            return func(user)
+        else:
+            return "Acceso denegado"
+
+    return wrapper
+
+# auth_view_dashboard = require_auth(admin_dashboard)
+# print(auth_view_dashboard("Admin"))
+
+@require_auth
+def admin_dashboard(user):
+    return f"Bienvenido al panel, {user}"
+
+print(admin_dashboard("Admin"))
+print(admin_dashboard("ADMIN"))
+```
+
+
+
