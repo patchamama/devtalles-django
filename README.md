@@ -73,6 +73,7 @@ python3 -m pip install Django
 python3 - m venv venv
 source venv/bin/activate
 pip install django
+
 pip freeze > requirements.txt
 cat requirements.txt
 
@@ -99,5 +100,51 @@ open http://127.0.0.1:8000/
 
 ```sh
 python3 manage.py startapp <app-name>
-````
 
+python3 manage.py runserver
+```
+
+### Registrar la aplicación
+
+```py
+# myproject/settings.py
+INSTALLED_APPS = [
+    ...
+    'myapp',
+]
+```
+
+### Crear una vista
+
+```py
+# myapp/views.py
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("¡Hola, mundo!")            
+```
+
+### Mapear la vista a una URL
+
+```py
+# myapp/urls.py
+from django.urls import path
+from .views import home
+
+urlpatterns = [
+    path('', home, name='home'),
+]
+```
+
+```py
+# myproject/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('myapp.urls')),
+]
+```     
+
+Las views manejan la lógica de la aplicación, interactúan con el modelo y seleccionan la plantilla adecuada para renderizar la respuesta. Las views reciben solicitudes HTTP, procesan los datos necesarios y devuelven respuestas HTTP, estas pueden funcionar usando `funciones` o `clases`.
