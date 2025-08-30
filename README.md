@@ -57,5 +57,47 @@ print(admin_dashboard("Admin"))
 print(admin_dashboard("ADMIN"))
 ```
 
+# Sección 3. Introducción a Django 
 
+En django se usa el modelo MTV y en el mismo donde, en relación al modelo MVC, la vista es el controlador y el template es la vista, más el modelo que es igual. En este modelo el controlador es el encargado de manejar la lógica de la aplicación, interactuar con el modelo y seleccionar la plantilla adecuada para renderizar la respuesta.
+
+### Instalar django de forma global
+
+```sh
+python3 -m pip install Django
+```
+
+### Crear entorno virtual e instalar django
+
+```sh
+python3 - m venv venv
+source venv/bin/activate
+pip install django
+pip freeze > requirements.txt
+cat requirements.txt
+
+# Crear projecto myproject
+django-admin startproject myproject
+```
+
+El archivo `asgi.py` en Django sirve como punto de entrada para aplicaciones ASGI (Asynchronous Server Gateway Interface), por ejemplo: HTTP requests síncronos y asíncronos, WebSocket (chat, push notifications), Conexiones de larga duración y Protocolos en tiempo real.
+
+WSGI `wsgi.py` es el estándar de Python para comunicación entre servidores web y aplicaciones web. Es el protocolo síncrono tradicional que Django ha usado desde sus inicios. Por ejemplo: interfaz de servidores web (conecta django con servidores apache, nginx, gunicorn), manejo de requests HTTP síncronos (tradicionales). 
+
+
+### Ejecutar django
+
+```sh
+python3 manage.py runserver
+
+open http://127.0.0.1:8000/
+```
+
+### Crear una aplicación
+
+*En el mundo de django las aplicaciones con paquetes o módulos*
+
+```sh
+python3 manage.py startapp <app-name>
+````
 

@@ -16,4 +16,4 @@ try:
 except FileNotFoundError:
     print("El archivo no existe")
 except Exception as err:
-    print(f"Ocurrió un error: {err}")
+    print(f"Ocurrió un error: {type(err)}")
