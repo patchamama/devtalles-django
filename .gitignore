@@ -7,3 +7,5 @@ db.sqlite3
 .env
 /playground/quotes/__pycache__/
 /playground/quotes/__pycache__/*.pyc
+/playground/config/__pycache__/
+/playground/config/__pycache__/*.pyc

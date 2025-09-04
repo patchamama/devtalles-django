@@ -12,6 +12,19 @@ days_of_week = {
     "sunday": "El único lugar donde el éxito viene antes que el trabajo es en el diccionario."
 }
 
+def index(request):
+    list_items = ""
+    days = list(days_of_week.keys())
+
+    for day in days:
+        day_capitalized = day.capitalize()
+        day_path = reverse('days_quote', args=[day])  # Construir la URL usando reverse y el name del path()
+        list_items += f"<li><a href='{day_path}'>{day_capitalized}</a></li>"
+        
+    response_html = f"<ul>{list_items}</ul>"
+
+    return HttpResponse(response_html)
+
 def days_week(request, day):
     # return HttpResponse(f"¡Hola {day}!")
     # quote_text = None
@@ -36,7 +49,7 @@ def days_week_with_number(request, day):
     if day > len(days) or day < 1:
         return HttpResponseNotFound("Número de día no válido. Por favor, elige un número entre 1 y 7.") # Status code 404
     redirect_day = days[day - 1]  # Obtener el nombre del día correspondiente al número
-    redirect_path = reverse('days_quote', args=[redirect_day])  # Construir la URL usando reverse
+    redirect_path = reverse('days_quote', args=[redirect_day])  # Construir la URL usando reverse y el name del path()
     return HttpResponseRedirect(redirect_path)  # Redirigir a la URL correcta, Status code 302 by default
 
     # days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
