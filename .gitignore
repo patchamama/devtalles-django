@@ -5,4 +5,5 @@ db.sqlite3
 /media/ 
 /static/
 .env
-/playground/__pycache__/
+/playground/quotes/__pycache__/
+/playground/quotes/__pycache__/*.pyc
