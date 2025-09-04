@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+db.sqlite3
+/playground/staticfiles/
+/media/ 
+/static/
+.env
+/playground/__pycache__/

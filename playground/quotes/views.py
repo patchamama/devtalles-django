@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 
 
 days_of_week = {
@@ -30,10 +30,16 @@ def days_week(request, day):
 
 
 def days_week_with_number(request, day):
-    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-    if 1 <= day <= 7:
-        day_name = days[day - 1]
-        return days_week(request, day_name)  # Llamar a la función days_week para obtener la cita
-        # return HttpResponse(f"El día {day} corresponde a {day_name}.")
-    else:
-        return HttpResponse("Número de día no válido. Por favor, elige un número entre 1 y 7.")
+    days = list(days_of_week.keys() )  # Obtener la lista de días de la semana
+    if day > len(days) or day < 1:
+        return HttpResponseNotFound("Número de día no válido. Por favor, elige un número entre 1 y 7.")
+    redirect_day = days[day - 1]  # Obtener el nombre del día correspondiente al número
+    return HttpResponseRedirect(f"/quotes/{redirect_day}/")  # Redirigir a la URL correcta
+
+    # days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    # if 1 <= day <= 7:
+    #     day_name = days[day - 1]
+    #     return days_week(request, day_name)  # Llamar a la función days_week para obtener la cita
+    #     # return HttpResponse(f"El día {day} corresponde a {day_name}.")
+    # else:
+    #     return HttpResponse("Número de día no válido. Por favor, elige un número entre 1 y 7.")
