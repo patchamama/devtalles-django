@@ -61,19 +61,20 @@ print(admin_dashboard("ADMIN"))
 
 En django se usa el modelo MTV y en el mismo donde, en relación al modelo MVC, la vista es el controlador y el template es la vista, más el modelo que es igual. En este modelo el controlador es el encargado de manejar la lógica de la aplicación, interactuar con el modelo y seleccionar la plantilla adecuada para renderizar la respuesta.
 
-### Instalar django de forma global
-
-```sh
-python3 -m pip install Django
-```
-
 ### Crear entorno virtual e instalar django
 
 ```sh
-python3 - m venv venv
+# Crear entorno virtual
+python3 -m venv venv
 source venv/bin/activate
-pip install django
 
+# Instalar django
+pip install django
+# o
+# pip install "django>=5.2,<6.0"
+python3 -m pip install Django
+
+# Guardar dependencias en requirements.txt
 pip freeze > requirements.txt
 cat requirements.txt
 
@@ -113,6 +114,28 @@ INSTALLED_APPS = [
     'myapp',
 ]
 ```
+
+> [!TIP] 
+> - No olvidar reiniciar el servidor después de registrar una nueva aplicación.
+>
+> - Muchas veces se recomienda crear una carpeta llamada `apps` en la raíz del proyecto para agrupar y organizar mejor las aplicaciones, por ejemplo: 
+> ```sh
+> myproject/
+>     apps/
+>         myapp/
+>         anotherapp/
+>     myproject/
+> ```
+>
+> En este caso se debe registrar la aplicación en `settings.py` > `INSTALLED_APPS` como `'apps.myapp'` y además se debe de actualizar el archivo `apps.py` dentro de la aplicación para que el nombre de la aplicación sea correcto, por ejemplo:
+>
+> ```py
+> # apps/myapp/apps.py
+> ...
+> class MyappConfig(AppConfig):
+>     default_auto_field = 'django.db.models.BigAutoField'
+>     name = 'apps.myapp' # Antes era 'myapp'
+> ```
 
 ### Crear una vista
 
