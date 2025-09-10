@@ -312,3 +312,54 @@ Es importante destacar que Django maneja los archivos estáticos de manera difer
 
 Asegurarse que en `settings.py` esté `DEBUG = True` en desarrollo para servir archivos estáticos automáticamente. En producción se debe configurar el servidor web (nginx, apache) para servir estos archivos, y usar `python manage.py collectstatic` para recopilar todos los archivos estáticos en un solo directorio. Adicionalmente la sección "INSTALLED_APPS" debe incluir `'django.contrib.staticfiles'`. En producción, `STATIC_URL` y `STATIC_ROOT` deben estar correctamente configurados para servir los archivos estáticos desde el servidor web.
 
+Se pueden generar archivos estáticos específicos para cada aplicación creando una carpeta `static` dentro de la aplicación, por ejemplo:
+
+```myapp/
+    static/
+        myapp/
+            css/
+                myapp_styles.css
+            js/
+                myapp_scripts.js
+            images/
+                myapp_logo.png
+``` 
+Y en la plantilla se referencian como:
+
+```html
+{% load static %}
+<link rel="stylesheet" href="{% static 'myapp/css/myapp_styles.css' %}">
+<script src="{% static 'myapp/js/myapp_scripts.js' %}"></script>
+<img src="{% static 'myapp/images/myapp_logo.png' %}" alt="My App Logo">
+``` 
+
+También se pueden crear a nivel global en la carpeta `static` en la raíz del proyecto, por ejemplo:
+
+```static/
+    css/
+        global_styles.css
+    js/
+        global_scripts.js
+    images/
+        global_logo.png
+```
+Y en la plantilla se referencian como:
+
+```html
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/global_styles.css' %}">
+<script src="{% static 'js/global_scripts.js' %}"></script>
+<img src="{% static 'images/global_logo.png' %}" alt="Global Logo">
+```
+
+> [!WARNING]
+> - No olvidar configurar `STATICFILES_DIRS` en `settings.py` para incluir la carpeta global `static` en la raíz del proyecto, si se usan archivos estáticos a nivel global, ejemplo:  `STATICFILES_DIRS = [ BASE_DIR / 'static' ]`
+>
+> - No olvidar agregar `'django.contrib.staticfiles'` en `INSTALLED_APPS` en `settings.py` para que Django maneje los archivos estáticos correctamente.
+>
+> - No olvidar ejecutar `python manage.py collectstatic` en producción para recopilar todos los archivos estáticos en el directorio especificado por `STATIC_ROOT`.
+>
+> - No se deben crear carpetas `static` dentro de la carpeta `templates`, ya que esto puede causar conflictos y problemas al servir los archivos estáticos. Las carpetas `static` deben estar separadas de las plantillas para mantener una estructura clara y evitar confusiones.
+>
+> - No olvidar ejecutar el servidor con `python manage.py runserver` para que los cambios en las plantillas y archivos estáticos se reflejen correctamente.
+
