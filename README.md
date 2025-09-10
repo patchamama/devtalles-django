@@ -150,3 +150,52 @@ urlpatterns = [
 Las views manejan la lógica de la aplicación, interactúan con el modelo y seleccionan la plantilla adecuada para renderizar la respuesta. Las views reciben solicitudes HTTP, procesan los datos necesarios y devuelven respuestas HTTP, estas pueden funcionar usando `funciones` o `clases`.
 
 La función `reverse` se utiliza para obtener la URL correspondiente a una vista basada en su nombre. Esto es útil para evitar hardcoding de URLs en las plantillas y vistas, facilitando el mantenimiento y la refactorización del código.
+
+### Crear una plantilla
+
+_Es una buena práctica crear una carpeta llamada `templates` dentro de la aplicación, y a su vez crear una subcarpeta con el nombre de la aplicación dentro de `templates`._
+
+```html
+<!-- myapp/templates/myapp/home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Home Page</h1>
+</body>
+</html> 
+```
+
+```py
+# myapp/views.py
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'myapp/home.html')           
+```
+### Configurar las plantillas en settings.py
+
+```py
+# myproject/settings.py
+import os
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
