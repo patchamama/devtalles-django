@@ -29,12 +29,12 @@
     <h2>Mi stack de desarrollo:</h2>
     <ul>
         {% for tech in stack %}
-            <li>{{ tech }}</li>
+            <li><a href="{% url 'stack' tech.id %}">{{ tech.name }}</a> - {{ tech.proficiency }}</li>
         {% empty %}
             <li>No hay tecnologías en el stack.</li>
         {% endfor %}
     </ul>
-    <h3>Mi primer stack es {{ stack.0 }}</h3>
+    <h3>Mi primer stack es {{ stack.0.name }}</h3>
     <h3>Mi último stack es {{ stack|last }}</h3>
 </body>
 </html>
