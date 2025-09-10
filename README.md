@@ -176,6 +176,9 @@ def home(request):
 
 ### Mapear la vista a una URL
 
+> [!TIP]
+> - Es una buena práctica crear un archivo `urls.py` dentro de cada aplicación para manejar las rutas específicas de la aplicación, y luego incluir esas rutas en el archivo `urls.py` del proyecto principal.
+
 ```py
 # myapp/urls.py
 from django.urls import path
