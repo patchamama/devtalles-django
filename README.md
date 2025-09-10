@@ -277,3 +277,38 @@ Ejemplos:
 {% endif %}
 ```
 
+### Error 404 personalizada
+
+Para esto se usa un template llamado `404.html` en la carpeta `templates/includes/404.html` y se configura en `settings.py` Debug y Allowed Hosts, y en la vista se lanza el error con `raise Http404("Mensaje de error personalizado")` cuando no se encuentra un recurso.
+
+```py
+DEBUG = False
+ALLOWED_HOSTS = ['*']  # Permitir todos los hosts para desarrollo, en producción especificar los dominios permitidos
+``` 
+
+### Agregar archivos estáticos
+
+Crear una carpeta llamada `static` en la raíz del proyecto y dentro crear subcarpetas para css, js, images, etc.
+
+```sh
+mkdir -p static/css static/js static/images
+```
+En `settings.py` agregar:
+
+```py
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+```
+En las plantillas usar:
+
+```html
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<script src="{% static 'js/scripts.js' %}"></script>
+<img src="{% static 'images/logo.png' %}" alt="Logo">
+```
+
+Es importante destacar que Django maneja los archivos estáticos de manera diferente en entornos de desarrollo y producción. Inicialmente es importante especificar `{% load static %}` al inicio de cada plantilla que utilice archivos estáticos para cargar el sistema de archivos estáticos de Django y permitir el uso de la etiqueta `{% static %}` para cargar los archivos estáticos específicos deseados.
+
+Asegurarse que en `settings.py` esté `DEBUG = True` en desarrollo para servir archivos estáticos automáticamente. En producción se debe configurar el servidor web (nginx, apache) para servir estos archivos, y usar `python manage.py collectstatic` para recopilar todos los archivos estáticos en un solo directorio. Adicionalmente la sección "INSTALLED_APPS" debe incluir `'django.contrib.staticfiles'`. En producción, `STATIC_URL` y `STATIC_ROOT` deben estar correctamente configurados para servir los archivos estáticos desde el servidor web.
+
