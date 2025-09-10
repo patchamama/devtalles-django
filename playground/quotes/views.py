@@ -15,14 +15,19 @@ days_of_week = {
 def index(request):
     list_items = ""
     days = list(days_of_week.keys())
+    quotes = days_of_week.values()
 
-    for day in days:
-        day_capitalized = day.capitalize()
-        day_path = reverse('days_quote', args=[day])  # Construir la URL usando reverse y el name del path()
-        list_items += f"<li><a href='{day_path}'>{day_capitalized}</a></li>"
+    # for day in days:
+    #     day_capitalized = day.capitalize()
+    #     day_path = reverse('days_quote', args=[day])  # Construir la URL usando reverse y el name del path()
+    #     list_items += f"<li><a href='{day_path}'>{day_capitalized}</a></li>"
         
-    response_html = f"<ul>{list_items}</ul>"
-    return HttpResponse(response_html)
+    # response_html = f"<ul>{list_items}</ul>"
+    # return HttpResponse(response_html)
+    return render(request, 'quotes/index.html', {
+        "days": days,
+        "quotes": quotes,
+    })
 
 def days_week(request, day):
     # return HttpResponse(f"¡Hola {day}!")
