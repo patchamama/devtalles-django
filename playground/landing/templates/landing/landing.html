@@ -8,6 +8,16 @@
 <body>
     <h1>¡Hola, mundo desde el template landing!</h1>
     <p>Mi nombre es {{ name | title }} y tengo {{ age }} años.</p>
-    <p>La fecha de hoy es {{ current_date | date:"d/m/Y" }}</p>
+    {% if name == "Mandy" %}
+        <p>¡Bienvenido de nuevo, Mandy!</p>
+    {% elif name == "Admin" %}
+        <p>¡Hola, Admin! Tienes acceso completo.</p>
+    {% else %}
+        <p>Hola, visitante.</p>
+    {% endif %}
+    
+    {% if current_date %}
+        <p>La fecha de hoy es {{ current_date | date:"d/m/Y" }}</p>
+    {% endif %}
 </body>
 </html>

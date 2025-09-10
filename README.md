@@ -196,6 +196,48 @@ TEMPLATES = [
 
 # Filtros y etiquetas en plantillas
 
+Los filtros y etiquetas en las plantillas de Django son herramientas poderosas que permiten manipular y presentar datos de manera dinámica. Los filtros se aplican a variables para modificar su salida, mientras que las etiquetas proporcionan funcionalidades más complejas, como estructuras de control y lógica.
+
+Ref: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/
+
+### Filtros comunes
+
+- `{{ variable|upper }}`: Convierte el texto a mayúsculas.
+- `{{ variable|lower }}`: Convierte el texto a minúsculas.
+- `{{ variable|title }}`: Convierte el texto a formato título (primeras letras en mayúscula).
+- `{{ variable|default:"Valor por defecto" }}`: Muestra un valor por defecto si la variable es None o está vacía.
+- `{{ variable|length }}`: Devuelve la longitud de una lista, cadena u otro iterable.
+- `{{ variable|date:"F j, Y" }}`: Formatea una fecha según el formato especificado.
+- `{{ variable|add:5 }}`: Suma 5 al valor numérico de la variable.  
+
+### Etiquetas comunes (tags)
+
+- `{% if condition %} ... {% endif %}`: Estructura condicional.
+- `{% for item in list %} ... {% endfor %}`: Bucle para iterar sobre una lista.
+- `{% block block_name %} ... {% endblock %}`: Define un bloque de contenido que puede ser sobrescrito en plantillas hijas.
+- `{% extends "base.html" %}`: Indica que la plantilla hereda de otra plantilla (base).
+- `{% include "partial.html" %}`: Incluye otra plantilla dentro de la actual.   
+- `{% url 'view_name' %}`: Genera una URL basada en el nombre de la vista.
+- `{% csrf_token %}`: Inserta un token CSRF para proteger formularios contra ataques CSRF.
+- `{% load static %}`: Carga el sistema de archivos estáticos para usar archivos CSS, JS, imágenes, etc.
+- `{% comment %} ... {% endcomment %}`: Permite agregar comentarios en la plantilla que no se renderizan en el HTML final.
+- `{% with variable=value %} ... {% endwith %}`: Asigna un valor a una variable temporal dentro del bloque.
+- `{% verbatim %} ... {% endverbatim %}`: Evita que el contenido dentro del bloque sea procesado por el motor de plantillas de Django.
+- `{% cycle 'value1' 'value2' %}`: Alterna entre los valores especificados en cada iteración de un bucle.
+- `{% regroup list by attribute as grouped_list %}`: Agrupa una lista de objetos por un atributo específico.
+- `{% spaceless %} ... {% endspaceless %}`: Elimina espacios en blanco entre etiquetas HTML dentro del bloque.
+- `{% firstof var1 var2 "default" %}`: Muestra el primer valor no vacío entre los especificados.
+- `{% now "Y-m-d H:i" %}`: Muestra la fecha y hora actual en el formato especificado.
+- `{% debug %}`: Muestra información de depuración sobre el contexto actual (útil para desarrollo).
+- `{% static "path/to/file" %}`: Genera la URL para un archivo estático.
+- `{% load custom_tags %}`: Carga un archivo de etiquetas personalizadas.
+- `{% filter filter_name %} ... {% endfilter %}`: Aplica un filtro a todo el contenido dentro del bloque.
+- `{% autoescape on/off %} ... {% endautoescape %}`: Controla el autoescape del contenido dentro del bloque.
+- `{% include "template.html" %}`: Incluye otra plantilla dentro de la actual.
+- `{% blocktrans %} ... {% endblocktrans %}`: Marca un bloque de texto para traducción.<
+- `{% url 'view_name' %}`: Genera una URL basada en el nombre de la vista.
+
+
 Ejemplos:
 
 ```html
@@ -219,3 +261,4 @@ Ejemplos:
     <p>Por favor, inicia sesión.</p>
 {% endif %}
 ```
+
