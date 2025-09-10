@@ -116,8 +116,6 @@ INSTALLED_APPS = [
 ```
 
 > [!TIP] 
-> - No olvidar reiniciar el servidor después de registrar una nueva aplicación.
->
 > - Muchas veces se recomienda crear una carpeta llamada `apps` en la raíz del proyecto para agrupar y organizar mejor las aplicaciones, por ejemplo: 
 > ```sh
 > myproject/
@@ -136,6 +134,35 @@ INSTALLED_APPS = [
 >     default_auto_field = 'django.db.models.BigAutoField'
 >     name = 'apps.myapp' # Antes era 'myapp'
 > ```
+
+> [!TIP] 
+> - Crear de forma global las carpetas `templates` (\includes) y `static` (y sus subcarpetas css, js e images) en la raíz del proyecto para organizar mejor las plantillas y archivos estáticos.
+> - Configurar en `settings.py` las carpetas globales `templates` y `static` para que django las reconozca, por ejemplo:
+> ```py
+>  TEMPLATES = [
+>      {
+>          ...
+>          'DIRS': [ BASE_DIR / 'templates' ],
+>          'APP_DIRS': True,
+>          ...
+>      },
+>  ]
+>
+> ...
+>  STATIC_URL = '/static/'
+>  STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+> ```
+
+
+> [!WARNING]
+> - No olvidar reiniciar el servidor después de registrar una nueva aplicación.
+> - En un inicio es recomendable usar SQLite que es la base de datos por defecto en Django, pero en producción se recomienda usar PostgreSQL.
+> - No olvidar instalar el conector de la base de datos que se vaya a usar, por ejemplo, para PostgreSQL: `pip install psycopg2-binary`
+> - No olvidar configurar la base de datos en `settings.py` > `DATABASES` según la base de datos que se vaya a usar.
+> - No olvidar ejecutar las migraciones después de crear una nueva aplicación o modelo: `python manage.py migrate`  
+> - No olvidar crear un superusuario para acceder al panel de administración: `python manage.py createsuperuser`
+> - No olvidar registrar los modelos en `admin.py` para que aparezcan en el panel de administración.
+
 
 ### Crear una vista
 
