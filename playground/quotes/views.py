@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, Http404
 from django.urls import reverse
 
 days_of_week = {
@@ -42,7 +42,9 @@ def days_week(request, day):
         quote_text = days_of_week[day.lower()]  # Convertir a minúsculas para hacer la comparación insensible a mayúsculas
         return HttpResponse(quote_text)  # Status code 200
     except KeyError:
-        return HttpResponse("Día no válido. Por favor, elige un día de la semana.")  # Status code 200
+        # return HttpResponse("Día no válido. Por favor, elige un día de la semana.")  # Status code 200
+        # return render(request, 'includes/404.html', status=404)  # Status code 404 pero no es lo ideal, porque siempre se mostrará, incluso en modo desarrollo (DEBUG = True) y con el status code 200
+        raise Http404()  # Status code 404, este usa el template 404.html en la carpeta templates/includes/404.html y solo se mostrará en modo producción (DEBUG = False)
     except Exception as e:
         return HttpResponseNotFound(f"Ocurrió un error inesperado. {e}")  # Status code 404
 
