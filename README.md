@@ -194,3 +194,28 @@ TEMPLATES = [
 ]
 ```
 
+# Filtros y etiquetas en plantillas
+
+Ejemplos:
+
+```html
+<p>Nombre en mayúsculas: {{ name | upper }}</p>
+<p>Nombre capitalizado: {{ name | title }}</p>
+<p>Nombre en minúsculas: {{ name | lower }}</p>
+<p>Edad en 5 años: {{ age | add:5 }}</p>
+<p>Fecha actual: {{ current_date | date:"F j, Y" }}</p>
+<p>Lista de items:</p>
+<ul>
+    {% for item in items %}
+        <li>{{ item }}</li>
+    {% empty %}
+        <li>No hay items disponibles.</li>
+    {% endfor %}
+</ul>
+<p>Condicional:</p>
+{% if user.is_authenticated %}
+    <p>Bienvenido, {{ user.username }}!</p>
+{% else %}
+    <p>Por favor, inicia sesión.</p>
+{% endif %}
+```
