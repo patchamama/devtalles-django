@@ -180,22 +180,17 @@ def home(request):
 ### Configurar las plantillas en settings.py
 
 ```py
-# myproject/settings.py
-import os
-
+INSTALLED_APPS = [
+    ...
+    'myapp',
+]   
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+        ...
+        'DIRS': [],
+        'APP_DIRS': True, # Busca plantillas en las carpetas 'templates' de cada app
+        ...
     },
 ]
 ```
+
