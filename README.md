@@ -194,6 +194,21 @@ TEMPLATES = [
 ]
 ```
 
+Si agregamos plantillas en una carpeta global `templates` en el proyecto, debemos indicarlo en `settings.py`, por ejemplo, sí agregamos una carpeta `templates` en la raíz del proyecto con el archivo `base.html` que contiene la estructura HTML común a todas las páginas, debemos indicarlo en `settings.py`:
+
+```py
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        ...
+    },
+]
+```
+
 # Filtros y etiquetas en plantillas
 
 Los filtros y etiquetas en las plantillas de Django son herramientas poderosas que permiten manipular y presentar datos de manera dinámica. Los filtros se aplican a variables para modificar su salida, mientras que las etiquetas proporcionan funcionalidades más complejas, como estructuras de control y lógica.

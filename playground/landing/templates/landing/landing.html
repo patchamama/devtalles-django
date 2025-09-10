@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hola mundo</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+    Landing Page
+{% endblock %}
+
+{% block content %}
     <h1>¡Hola, mundo desde el template landing!</h1>
     <p>Mi nombre es {{ name | title }} y tengo {{ age }} años.</p>
     {% if name == "Mandy" %}
@@ -36,5 +35,5 @@
     </ul>
     <h3>Mi primer stack es {{ stack.0.name }}</h3>
     <h3>Mi último stack es {{ stack|last }}</h3>
-</body>
-</html>
+
+{% endblock %}
