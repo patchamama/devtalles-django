@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content %}
+    {% include './includes/partial.html' %}
+
     <h1>¡Hola, mundo desde el template quotes!</h1>
     
     <h2>Citas:</h2>
@@ -15,4 +17,6 @@
         <li>No hay citas disponibles.</li>
     {% endfor %}
     </ul>
+
+    {% include './includes/endpartial.html' with days=days quotes=quotes name="Ricardo" %}
 {% endblock %}
