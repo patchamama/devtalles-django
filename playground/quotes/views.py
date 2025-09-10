@@ -22,7 +22,6 @@ def index(request):
         list_items += f"<li><a href='{day_path}'>{day_capitalized}</a></li>"
         
     response_html = f"<ul>{list_items}</ul>"
-
     return HttpResponse(response_html)
 
 def days_week(request, day):
