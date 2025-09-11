@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Devilearn</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="./css/styles.css" />
-</head>
+{% block custom_styles %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+{% endblock custom_styles %}
 
-<body>
+{% block title %}
+    Todos los cursos
+{% endblock %}
+
+{% block content %}
     <div class="layout">
 
         <div class="sidebar">
@@ -154,6 +154,4 @@
     </div>
     <script src="./js/script.js"></script>
 
-</body>
-
-</html>
+{% endblock %}

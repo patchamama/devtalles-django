@@ -3,8 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 def course_list(request):
-    pass
-# return render(request, 'courses/course_list.html')
+    return render(request, 'courses/courses.html')
 
 def course_detail(request, course_id):
     pass
