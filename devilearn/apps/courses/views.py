@@ -43,7 +43,27 @@ def course_list(request):
     return render(request, 'courses/courses.html', {'courses': courses})
 
 def course_detail(request):
-    return render(request, 'courses/course_detail.html')
+    course = {
+        'course_title': 'Python: fundamentos hasta los detalles',
+        'course_link': 'https://www.udemy.com/course/python-fundamentos-hasta-los-detalles/',
+        'info_course': {
+            'lessons': 79,
+            'duration': 8,
+            'instructor': 'Ricardo Cuéllar'
+            },
+        'course_content': [ 
+            {
+                'id': 1,
+                'name': 'Introducción al curso',
+                'lessons': [
+                    {'name': 'Bienvenida', 'type': 'video', 'duration': '5:00'},
+                    {'name': '¿Qué es Python?', 'type': 'article', 'duration': '10:00'},
+                    {'name': 'Instalación de Python', 'type': 'video', 'duration': '8:30'},
+                ]
+            }
+        ]
+    }  # Aquí iría la lógica para obtener los detalles del curso desde la base de datos
+    return render(request, 'courses/course_detail.html', {'course': course})
 
 def course_lesson(request, course_id, lesson_id):
     pass

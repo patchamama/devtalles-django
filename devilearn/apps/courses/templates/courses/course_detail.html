@@ -28,34 +28,20 @@
                     <div class="course-sections">
                         <h2>Contenido del curso</h2>
                         <div class="accordion">
+
+                            {% for section in course.course_content %}
                             <div class="accordion-item">
-                                <button class="accordion-header">Sección 1: Introducción al curso</button>
+                                <button class="accordion-header">Sección {{ forloop.counter }}: {{ section.name }}</button>
                                 <div class="accordion-content">
                                     <ul>
-                                        <li><i class="fa-solid fa-video"></i>¿Qué aprenderás en este curso?</li>
-                                        <li><i class="fa-solid fa-file"></i>Cómo usar la plataforma</li>
+                                        {% for lesson in section.lessons %}
+                                        <li><i class="fa-solid {% if lesson.type == 'video' %}fa-video{% else %}fa-file{% endif %}"></i>{{ lesson.name }}</li>
+                                        {% endfor %}
                                     </ul>
                                 </div>
                             </div>
-                            <div class="accordion-item">
-                                <button class="accordion-header">Sección 2: Fundamentos necesarios de Python</button>
-                                <div class="accordion-content">
-                                    <ul>
-                                        <li>Variables y tipos de datos</li>
-                                        <li>Condicionales y bucles</li>
-                                        <li>Funciones básicas</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <button class="accordion-header">Sección 3: Introducción a Django</button>
-                                <div class="accordion-content">
-                                    <ul>
-                                        <li>¿Qué es Django?</li>
-                                        <li>Primer proyecto con Django</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            {% endfor %}
+                           
                             <!-- Agrega más secciones similares -->
                         </div>
                     </div>
@@ -70,9 +56,9 @@
                         <div class="card-body">
                             <h3>Acerca de este curso</h3>
                             <ul class="course-details">
-                                <li><i class="fa-solid fa-file"></i> 79 lecciones</li>
-                                <li><i class="fa-solid fa-video"></i> 8 horas de contenido en video</li>
-                                <li><i class="fa-solid fa-graduation-cap"></i> Ricardo Cuéllar</li>
+                                <li><i class="fa-solid fa-file"></i> {{ course.info_course.lessons }} clases</li>
+                                <li><i class="fa-solid fa-video"></i> {{ course.info_course.duration }}horas de contenido en video</li>
+                                <li><i class="fa-solid fa-graduation-cap"></i> {{ course.info_course.instructor }}</li>
                             </ul>
                             <a class="btn bnt-primary btn-course" href="course_lessons.html">Continuar aprendiendo</a>
 
