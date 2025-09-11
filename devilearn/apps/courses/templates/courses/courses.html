@@ -57,7 +57,7 @@
                         <div class="course-grid">
                             <!-- Card 1 -->
                             <div class="course-card">
-                                <a href="course_detail.html">
+                                <a href="{% url 'course_detail' %}">
                                     <img src="{% static 'images/curso_1.jpg' %}" alt="Course Image" class="course-img" />
                                     <div class="course-info">
                                         <div class="course-rating">
@@ -80,7 +80,7 @@
 
                             <!-- Card 2 -->
                             <div class="course-card">
-                                <a href="course_detail.html">
+                                <a href="{% url 'course_detail' %}">
                                     <img src="{% static 'images/curso_2.jpg' %}" alt="Course Image" class="course-img" />
                                     <div class="course-info">
                                         <div class="course-rating">
@@ -102,7 +102,7 @@
 
                             <!-- Card 3 -->
                             <div class="course-card">
-                                <a href="course_detail.html">
+                                <a href="{% url 'course_detail' %}">
                                     <img src="{% static 'images/curso_3.jpg' %}" alt="Course Image" class="course-img" />
                                     <div class="course-info">
                                         <div class="course-rating">
@@ -126,7 +126,7 @@
 
                             <!-- Card 4 -->
                             <div class="course-card">
-                                <a href="course_detail.html">
+                                <a href="{% url 'course_detail' %}">
                                     <img src="{% static 'images/curso_4.jpg' %}" alt="Course Image" class="course-img" />
                                     <div class="course-info">
                                         <div class="course-rating">
@@ -152,6 +152,9 @@
             </main>
         </div>
     </div>
-    <script src="./js/script.js"></script>
 
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
