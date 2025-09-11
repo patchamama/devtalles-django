@@ -42,8 +42,8 @@ def course_list(request):
     ]  # Aquí iría la lógica para obtener los cursos desde la base de datos
     return render(request, 'courses/courses.html', {'courses': courses})
 
-def course_detail(request, course_id):
-    pass
+def course_detail(request):
+    return render(request, 'courses/course_detail.html')
 
 def course_lesson(request, course_id, lesson_id):
     pass
