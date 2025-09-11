@@ -66,6 +66,5 @@ def course_detail(request):
     }  # Aquí iría la lógica para obtener los detalles del curso desde la base de datos
     return render(request, 'courses/course_detail.html', {'course': course})
 
-def course_lesson(request, course_id, lesson_id):
-    pass
-# return render(request, 'courses/course_detail.html', {'course_id': course_id})
+def course_lesson(request):
+    return render(request, 'courses/course_lessons.html')
