@@ -45,7 +45,8 @@ def course_list(request):
 def course_detail(request):
     course = {
         'course_title': 'Python: fundamentos hasta los detalles',
-        'course_link': 'https://www.udemy.com/course/python-fundamentos-hasta-los-detalles/',
+        'course_link': 'course_lesson',
+        'course_image': 'images/curso_2.jpg',
         'info_course': {
             'lessons': 79,
             'duration': 8,
