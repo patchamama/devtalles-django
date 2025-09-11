@@ -67,4 +67,31 @@ def course_detail(request):
     return render(request, 'courses/course_detail.html', {'course': course})
 
 def course_lesson(request):
-    return render(request, 'courses/course_lessons.html')
+    lessons = {
+        'course_title': 'Python: fundamentos hasta los detalles',
+        'course_progress': 25,
+        'course_content': [
+            {
+                'id': 1,
+                'name': 'Introducción al curso',
+                'total_lessons': 3,
+                'completed_lessons': 1,
+                'lessons': [
+                    {'name': 'Bienvenida', 'type': 'video', 'duration': '5:00'},
+                    {'name': '¿Qué es Python?', 'type': 'article', 'duration': '10:00'},
+                    {'name': 'Instalación de Python', 'type': 'video', 'duration': '8:30'},
+                ]
+            },
+            {
+                'id': 2,
+                'name': 'Fundamentos necesarios de Python',
+                'total_lessons': 27,
+                'completed_lessons': 0,
+                'lessons': [
+                    {'name': 'Variables', 'type': 'video', 'duration': '5:00'},
+                    {'name': 'Condicionales', 'type': 'article', 'duration': '10:00'},
+                ]
+            }
+        ]
+    }  # Aquí iría la lógica para obtener las lecciones del curso desde la base de datos
+    return render(request, 'courses/course_lessons.html', {'lessons': lessons})

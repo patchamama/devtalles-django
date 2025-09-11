@@ -24,8 +24,8 @@
         <aside class="sidebar">
 
 
-            <h1 class="course-title">Django: Crea aplicaciones web robustas con Python</h1>
-            <p class="progress">0% completado</p>
+            <h1 class="course-title">{{ lessons.course_title }}</h1>
+            <p class="progress">{{ lessons.course_progress }}% completado</p>
 
 
             <input class="lesson-search" placeholder="Buscar...">
@@ -34,27 +34,20 @@
 
             <!-- SECCIONES -->
             <div class="accordion">
+
+                <!-- SECCIÓN 1 -->
+                {% for section in lessons.course_content %}
                 <div class="accordion-item">
-                    <button class="accordion-header">Sección 1: Introducción al curso <span>0 / 6</span></button>
+                    <button class="accordion-header">Sección {{ forloop.counter }}: {{ section.name }} <span>{{ section.completed_lessons }} / {{ section.total_lessons }}</span></button>
                     <div class="accordion-content">
                         <ul>
-                            <li>Bienvenida</li>
-                            <li>¿Qué aprenderás?</li>
-                            <li>Requisitos del curso</li>
+                            {% for lesson in section.lessons %}
+                            <li>{{ lesson.name }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
-                <div class="accordion-item">
-                    <button class="accordion-header">Sección 2: Fundamentos necesarios de Python <span>0 /
-                            27</span></button>
-                    <div class="accordion-content">
-                        <ul>
-                            <li>Variables</li>
-                            <li>Condicionales</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Agrega más secciones si deseas -->
+                {% endfor %}
             </div>
         </aside>
 
