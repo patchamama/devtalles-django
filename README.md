@@ -416,3 +416,258 @@ Y en la plantilla se referencian como:
 >
 > - No olvidar ejecutar el servidor con `python manage.py runserver` para que los cambios en las plantillas y archivos estáticos se reflejen correctamente.
 
+# Sección 7. Modelos y bases de datos
+
+### Interactuar con la base de datos desde el terminal
+
+```sh
+sqlite3 db.sqlite3
+```
+
+> [!TIP]
+> - Recomiendo usar SQLite en desarrollo por su simplicidad, pero en producción usar PostgreSQL.
+> - Recomiendo usar la aplicación `Table Plus` o `DB Browser for SQLite` para interactuar con la base de datos SQLite de forma visual. [Table Plus](https://tableplus.com/) (de pago, pero tiene versión gratuita con limitaciones) y [DB Browser for SQLite](https://sqlitebrowser.org/) (gratuito y de código abierto).
+> - Si se usa otra base de datos como PostgreSQL o MySQL, se debe usar el cliente correspondiente para interactuar con la base de datos desde el terminal.
+> - En PostgreSQL se usa `psql -U username -d dbname` y en MySQL se usa `mysql -u username -p dbname`
+> - En SQLite se puede usar el comando `.help` para ver los comandos disponibles.
+> - En todos los casos, se puede usar el comando `.exit` para salir del cliente de la base de datos.
+> - En SQLite, las tablas creadas por Django tienen el prefijo del nombre de la aplicación, por ejemplo: `myapp_mymodel` para un modelo llamado `MyModel` en una aplicación llamada `myapp`.
+
+
+### Gestionar base de datos con SQLite desde sql con table Plus
+
+```sql
+-- Crear tabla
+CREATE TABLE author (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL,
+    bio TEXT,
+    birth_date DATE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE book (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    published_date DATE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- author_id INTEGER,
+    -- FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE CASCADE 
+    author_id INTEGER REFERENCES author(id) ON DELETE CASCADE
+);  
+
+-- Insertar datos
+INSERT INTO author (name, birth_date) VALUES ('James Austen', '1980-01-01');
+INSERT INTO book (title, description, published_date, author_id) VALUES ('Orgullo y prejuicio', 'Description de Book 1', '2023-01-01', 1);
+-- Consultar datos
+SELECT * FROM author;
+-- Actualizar datos
+UPDATE author SET name='Leonardo Padura' WHERE id=1;
+-- Asegurar que se borren los libros del autor al borrar el autor (ON DELETE CASCADE)
+PRAGMA foreign_keys = ON;  
+PRAGMA foreign_keys; -- Verificar que esté activado
+-- Eliminar datos
+DELETE FROM author WHERE id=1;
+DROP TABLE author;
+DROP TABLE book;
+-- Insertar varios registros de una vez
+INSERT INTO author (name, birth_date) VALUES 
+('J.K. Rowling', '1965-07-31'),
+('Gabriel García Márquez', '1985-03-15'),
+('Haruki Murakami', '1990-12-10'),
+('Isabel Allende', '1975-05-20'),
+('Chinua Achebe', '1930-11-16'); 
+INSERT INTO book (title, description, published_date, author_id) VALUES 
+('Harry Potter y la piedra filosofal', 'Description de Book 2', '2023-02-01', 2),
+('Cien años de soledad', 'Description de Book 3', '2023-03-01', 2),
+('Kafka en la orilla', 'Description de Book 4', '2023-04-01', 3),
+('La casa de los espíritus', 'Description de Book 5', '2023-05-01', 4),
+('El hombre en busca de sentido', 'Description de Book 6', '2023-06-01', 5);
+-- Consultas avanzadas   
+SELECT * FROM author;
+SELECT * FROM book;
+SELECT * FROM book WHERE author_id=2;
+SELECT * FROM book WHERE author_id IN (2, 3);
+SELECT * FROM book WHERE author_id BETWEEN 2 AND 3;
+SELECT * FROM book WHERE title LIKE '%Book%';
+SELECT * FROM book ORDER BY published_date DESC;
+SELECT title from book WHERE published_date > '2023-02-15';
+SELECT * FROM book LIMIT 2 OFFSET 1;
+SELECT COUNT(*) FROM author;
+
+SELECT title from book WHERE author_id = (
+    SELECT id FROM author WHERE name='Gabriel García Márquez'
+);
+-- Simplificar la consulta anterior con IN
+SELECT title from book WHERE author_id IN (
+    SELECT id FROM author WHERE name='Gabriel García Márquez' or name='J.K. Rowling'
+);
+
+SELECT author.name, COUNT(book.id) AS book_count
+FROM author
+LEFT JOIN book ON author.id = book.author_id
+GROUP BY author.id, author.name;
+
+SELECT author.name, book.title
+FROM author
+JOIN book ON author.id = book.author_id 
+WHERE author.id = 2;        
+```
+
+
+
+
+
+### Interactuar con la base de datos desde el shell de django
+
+Podemos abrir el shell de django con (y salir con `exit()` ):
+
+```sh
+python manage.py shell
+``` 
+Y dentro del shell podemos interactuar con los modelos y la base de datos, por ejemplo:
+
+```py
+from myapp.models import MyModel
+# Crear un nuevo objeto
+obj = MyModel(field1='value1', field2='value2')
+obj.save()
+# Consultar objetos
+objs = MyModel.objects.all()
+for o in objs:
+    print(o.field1, o.field2)
+# Filtrar objetos
+filtered_objs = MyModel.objects.filter(field1='value1')
+for o in filtered_objs:
+    print(o.field1, o.field2)
+# Actualizar un objeto
+obj = MyModel.objects.get(id=1)
+obj.field1 = 'new_value'
+obj.save()
+# Eliminar un objeto
+obj = MyModel.objects.get(id=1)
+obj.delete()
+``` 
+
+### Crear un modelo
+
+```py
+# myapp/models.py
+from django.db import models
+
+class MyModel(models.Model):
+    field1 = models.CharField(max_length=100)
+    field2 = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+    def __str__(self):
+        return self.field1
+```
+
+### Migraciones
+
+```sh
+# Crear migraciones
+python manage.py makemigrations
+# Aplicar migraciones
+python manage.py migrate
+```
+### Registrar el modelo en el admin
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import MyModel
+
+admin.site.register(MyModel)
+```
+### Crear un superusuario
+
+```sh
+python manage.py createsuperuser
+``` 
+### Acceder al panel de administración
+
+```sh
+python manage.py runserver
+```
+Abrir en el navegador: http://127.0.0.1:8000/admin/ 
+### Consultas básicas con el ORM
+
+```py
+from myapp.models import MyModel    
+# Crear un nuevo objeto
+obj = MyModel(field1='value1', field2='value2')
+obj.save()
+# Consultar todos los objetos
+objs = MyModel.objects.all()
+for o in objs:
+    print(o.field1, o.field2)
+# Filtrar objetos
+filtered_objs = MyModel.objects.filter(field1='value1')
+for o in filtered_objs:
+    print(o.field1, o.field2)
+# Obtener un objeto por su ID
+obj = MyModel.objects.get(id=1)
+print(obj.field1, obj.field2)
+# Actualizar un objeto
+obj = MyModel.objects.get(id=1)
+obj.field1 = 'new_value'
+obj.save()
+# Eliminar un objeto
+obj = MyModel.objects.get(id=1)
+obj.delete()
+``` 
+
+### Relaciones entre modelos
+
+```py
+class Author(models.Model):
+    name = models.CharField(max_length=100)     
+    def __str__(self):
+        return self.name
+class Book(models.Model):
+    title = models.CharField(max_length=200)        
+
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+    published_date = models.DateField()
+    def __str__(self):
+        return self.title
+```     
+
+### Consultas con relaciones
+
+```py
+# Obtener todos los libros de un autor
+author = Author.objects.get(id=1)
+books = author.books.all()
+for book in books:
+    print(book.title)
+# Obtener el autor de un libro
+book = Book.objects.get(id=1)
+print(book.author.name)
+``` 
+
+### Eliminar un modelo
+
+```sh
+python manage.py makemigrations
+python manage.py migrate
+```
+### Comandos útiles 
+
+```sh
+# Ver el estado de las migraciones
+python manage.py showmigrations
+# Ver las consultas SQL generadas por las migraciones
+python manage.py sqlmigrate myapp 0001_initial
+# Borrar todas las migraciones y la base de datos (usar con precaución)
+rm -rf myapp/migrations
+rm db.sqlite3
+python manage.py makemigrations
+python manage.py migrate
+``` 
+
