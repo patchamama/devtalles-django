@@ -446,6 +446,13 @@ CREATE TABLE author (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+-- En Django sería:  
+-- class Author(models.Model):
+--     name = models.CharField(max_length=100)
+--     bio = models.TextField()
+--     birth_date = models.DateField()
+--     created_at = models.DateTimeField(auto_now_add=True)
+--     updated_at = models.DateTimeField(auto_now=True)
 
 CREATE TABLE book (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -458,21 +465,45 @@ CREATE TABLE book (
     -- FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE CASCADE 
     author_id INTEGER REFERENCES author(id) ON DELETE CASCADE
 );  
+-- En Django sería: 
+-- class Book(models.Model):
+--     title = models.CharField(max_length=200)
+--     description = models.TextField()
+--     published_date = models.DateField()      
+--     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+--     created_at = models.DateTimeField(auto_now_add=True)
+--     updated_at = models.DateTimeField(auto_now=True)
 
 -- Insertar datos
 INSERT INTO author (name, birth_date) VALUES ('James Austen', '1980-01-01');
 INSERT INTO book (title, description, published_date, author_id) VALUES ('Orgullo y prejuicio', 'Description de Book 1', '2023-01-01', 1);
+-- En Django sería: Author.objects.create(name='James Austen', birth_date='1980-01-01')
+-- En Django sería: Book.objects.create(title='Orgullo y prejuicio', description='Description de Book 1', published_date='2023-01-01', author_id=1)
+
 -- Consultar datos
 SELECT * FROM author;
+-- En Django sería: Author.objects.all()
+
 -- Actualizar datos
 UPDATE author SET name='Leonardo Padura' WHERE id=1;
+-- En Django sería: Author.objects.filter(id=1).update(name='Leonardo Padura')
+
 -- Asegurar que se borren los libros del autor al borrar el autor (ON DELETE CASCADE)
 PRAGMA foreign_keys = ON;  
+-- En SQLite las claves foráneas están desactivadas por defecto, se deben activar con PRAGMA
+-- En Django siempre están activadas
 PRAGMA foreign_keys; -- Verificar que esté activado
+
 -- Eliminar datos
 DELETE FROM author WHERE id=1;
+DELETE FROM book WHERE id=1;
 DROP TABLE author;
 DROP TABLE book;
+-- En Django sería: Author.objects.filter(id=1).delete()
+-- En Django sería: Book.objects.filter(id=1).delete()
+-- En Django sería: Author.objects.all().delete()
+-- En Django sería: Book.objects.all().delete()
+
 -- Insertar varios registros de una vez
 INSERT INTO author (name, birth_date) VALUES 
 ('J.K. Rowling', '1965-07-31'),
@@ -480,46 +511,127 @@ INSERT INTO author (name, birth_date) VALUES
 ('Haruki Murakami', '1990-12-10'),
 ('Isabel Allende', '1975-05-20'),
 ('Chinua Achebe', '1930-11-16'); 
+-- En Django sería: 
+-- Author.objects.bulk_create([
+--     Author(name='J.K. Rowling', birth_date='1965-07-31'),
+--     Author(name='Gabriel García Márquez', birth_date='1985-03-15'),
+--     Author(name='Haruki Murakami', birth_date='1990-12-10'),
+--     Author(name='Isabel Allende', birth_date='1975-05-20'),
+--     Author(name='Chinua Achebe', birth_date='1930-11-16'),
+-- ])
 INSERT INTO book (title, description, published_date, author_id) VALUES 
 ('Harry Potter y la piedra filosofal', 'Description de Book 2', '2023-02-01', 2),
 ('Cien años de soledad', 'Description de Book 3', '2023-03-01', 2),
 ('Kafka en la orilla', 'Description de Book 4', '2023-04-01', 3),
 ('La casa de los espíritus', 'Description de Book 5', '2023-05-01', 4),
 ('El hombre en busca de sentido', 'Description de Book 6', '2023-06-01', 5);
+-- En Django sería: 
+-- Book.objects.bulk_create([
+--     Book(title='Harry Potter y la piedra filosofal', description='Description de Book 2', published_date='2023-02-01', author_id=2),
+--     Book(title='Cien años de soledad', description='Description de Book 3', published_date='2023-03-01', author_id=2),
+--     Book(title='Kafka en la orilla', description='Description de Book 4', published_date='2023-04-01', author_id=3),
+--     Book(title='La casa de los espíritus', description='Description de Book 5', published_date='2023-05-01', author_id=4),
+--     Book(title='El hombre en busca de sentido', description='Description de Book 6', published_date='2023-06-01', author_id=5),
+-- ])
+
 -- Consultas avanzadas   
 SELECT * FROM author;
+-- En Django sería: Author.objects.all()
 SELECT * FROM book;
+-- En Django sería: Book.objects.all()
 SELECT * FROM book WHERE author_id=2;
+-- En Django sería: Book.objects.filter(author_id=2)
 SELECT * FROM book WHERE author_id IN (2, 3);
+-- En Django sería: Book.objects.filter(author_id__in=[2, 3])
 SELECT * FROM book WHERE author_id BETWEEN 2 AND 3;
+-- En Django sería: Book.objects.filter(author_id__range=(2, 3))
 SELECT * FROM book WHERE title LIKE '%Book%';
+-- En Django sería: Book.objects.filter(title__icontains='Book')
 SELECT * FROM book ORDER BY published_date DESC;
+-- En Django sería: Book.objects.order_by('-published_date')
 SELECT title from book WHERE published_date > '2023-02-15';
+-- En Django sería: Book.objects.filter(published_date__gt='2023-02-15')
 SELECT * FROM book LIMIT 2 OFFSET 1;
+-- En Django sería: Book.objects.all()[1:3]
 SELECT COUNT(*) FROM author;
-
+-- En Django sería: Author.objects.count()
+SELECT AVG(id) FROM author;
+-- En Django sería: Author.objects.aggregate(Avg('id'))
+SELECT MAX(id) FROM author;
+-- En Django sería: Author.objects.aggregate(Max('id'))
+SELECT MIN(id) FROM author;
+-- En Django sería: Author.objects.aggregate(Min('id'))
+SELECT SUM(id) FROM author;
+-- En Django sería: Author.objects.aggregate(Sum('id'))
+-- Consultas con subconsultas
 SELECT title from book WHERE author_id = (
     SELECT id FROM author WHERE name='Gabriel García Márquez'
 );
+-- En Django sería: Book.objects.filter(author__name='Gabriel García Márquez').values_list('title', flat=True)
+SELECT title from book WHERE author_id = (
+    SELECT id FROM author WHERE name='Gabriel García Márquez' or name='J.K. Rowling'
+);
+-- En Django sería: Book.objects.filter(author__name__in=['Gabriel García Márquez', 'J.K. Rowling']).values_list('title', flat=True)    
 -- Simplificar la consulta anterior con IN
 SELECT title from book WHERE author_id IN (
     SELECT id FROM author WHERE name='Gabriel García Márquez' or name='J.K. Rowling'
 );
+-- En Django sería: Book.objects.filter(author__name__in=['Gabriel García Márquez', 'J.K. Rowling']).values_list('title', flat=True)
 
 SELECT author.name, COUNT(book.id) AS book_count
 FROM author
 LEFT JOIN book ON author.id = book.author_id
 GROUP BY author.id, author.name;
+-- En Django sería: Author.objects.annotate(book_count=Count('book')).values('name', 'book_count')
 
 SELECT author.name, book.title
 FROM author
-JOIN book ON author.id = book.author_id 
-WHERE author.id = 2;        
+JOIN book ON author.id = book.author_id
+WHERE author.id = 2;
+-- En Django sería: Author.objects.filter(id=2).values('name', 'book__title')   
+
+SELECT * FROM books
+JOIN author ON books.author_id = author.id
+WHERE author.name = 'Gabriel García Márquez';
+-- En Django sería: Book.objects.filter(author__name='Gabriel García Márquez')
 ```
 
+### ORM de Django
+ 
+ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que permite interactuar con bases de datos relacionales utilizando clases y objetos en un lenguaje de programación en lugar de escribir consultas SQL directamente. Django incluye un ORM potente y fácil de usar que permite definir modelos como clases de Python, y luego realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) utilizando métodos y atributos de estas clases. Al final un ORM traduce estas operaciones en consultas SQL que se ejecutan en la base de datos subyacente.
 
 
+#### Cómo funciona el ORM de Django
 
+1. **Definición de modelos**: Los modelos se definen como clases de Python que heredan de `django.db.models.Model` y estos representan las tablas de la base de datos. Cada atributo de la clase representa un campo en la tabla de la base de datos y se define utilizando tipos de campo proporcionados por Django (por ejemplo, `CharField`, `TextField`, `DateTimeField`, etc.). Y cada instancia de la clase representa una fila en la tabla. Es decir, como resumen, el ORM hará la traducción entre conceptos de programación orientada a objetos y bases de datos relacionales es la siguiente:
+
+    - Clases u objetos = Tablas
+    - Atributos = Columnas o Campos
+    - Instancias = Filas o Registros
+
+2. **Migraciones**: Django utiliza un sistema de migraciones para aplicar cambios en los modelos a la base de datos. Cuando se crea o modifica un modelo, se deben crear y aplicar migraciones para reflejar esos cambios en la base de datos.
+
+3. **Consultas**: El ORM permite realizar consultas a la base de datos utilizando una sintaxis de Python en lugar de SQL. Esto incluye operaciones como filtrado, ordenamiento y agregación de datos.
+
+4. **Relaciones**: Django facilita la definición de relaciones entre modelos (por ejemplo, uno a muchos, muchos a muchos) utilizando campos especiales como `ForeignKey` y `ManyToManyField`. Esto permite navegar fácilmente por las relaciones entre los datos.
+
+5. **Consultas avanzadas**: El ORM de Django permite realizar consultas avanzadas utilizando métodos como `annotate()`, `aggregate()`, `prefetch_related()` y `select_related()`, lo que optimiza el rendimiento y reduce la cantidad de consultas a la base de datos.
+
+6. **Administración**: Django incluye un panel de administración automático que se genera a partir de los modelos definidos. Esto permite gestionar los datos de la aplicación sin necesidad de crear interfaces de usuario personalizadas.
+
+7. **Compatibilidad con múltiples bases de datos**: El ORM de Django es compatible con varias bases de datos relacionales, como SQLite, PostgreSQL, MySQL y Oracle. Esto permite cambiar de base de datos sin necesidad de modificar el código de la aplicación.
+
+8. **Seguridad**: El ORM de Django ayuda a prevenir ataques de inyección SQL al utilizar consultas parametrizadas y escapar automáticamente los valores de entrada.
+
+9.  **Facilidad de uso**: El ORM de Django está diseñado para ser fácil de usar y comprender, lo que facilita el desarrollo rápido de aplicaciones web.
+
+10. **Documentación**: Django cuenta con una documentación extensa y bien mantenida que cubre todos los aspectos del ORM, lo que facilita el aprendizaje y la resolución de problemas.
+
+11. **Validación de datos**: El ORM de Django incluye mecanismos de validación de datos integrados que aseguran que los datos almacenados en la base de datos cumplan con las restricciones definidas en los modelos.
+
+12. **Extensibilidad**: El ORM de Django es altamente extensible, lo que permite a los desarrolladores crear campos personalizados, gestores de modelos y otros componentes para adaptarse a las necesidades específicas de su aplicación.
+
+_Como ventaja de usar ORM sobre SQL directo es que el ORM permite escribir código más limpio y mantenible, ya que las consultas se realizan utilizando la sintaxis de Python con objetos en lugar de SQL plano. Además, el ORM facilita la migración entre diferentes sistemas de bases de datos, ya que abstrae las diferencias entre ellos y soporta múltiples backends de bases de datos, el ORM permite una protección básica contra inyecciones SQL y errores._
 
 ### Interactuar con la base de datos desde el shell de django
 
