@@ -633,60 +633,71 @@ ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que per
 
 _Como ventaja de usar ORM sobre SQL directo es que el ORM permite escribir código más limpio y mantenible, ya que las consultas se realizan utilizando la sintaxis de Python con objetos en lugar de SQL plano. Además, el ORM facilita la migración entre diferentes sistemas de bases de datos, ya que abstrae las diferencias entre ellos y soporta múltiples backends de bases de datos, el ORM permite una protección básica contra inyecciones SQL y errores._
 
-### Interactuar con la base de datos desde el shell de django
+*Makemigrations* y *migrate* son comandos de Django que se utilizan para gestionar los cambios en la estructura de la base de datos a lo largo del ciclo de vida de una aplicación web. Estos comandos trabajan en conjunto para crear, aplicar y revertir migraciones, que son archivos que describen los cambios en los modelos de Django y cómo deben reflejarse en la base de datos. *Makemigrations* crea los archivos de migración basados en los cambios realizados en los modelos, mientras que *migrate* aplica esos cambios a la base de datos. 
 
-Podemos abrir el shell de django con (y salir con `exit()` ):
+Para ver sí hay alguna migración pendiente se puede usar el comando `python manage.py showmigrations` que muestra una lista de todas las migraciones disponibles y su estado (aplicadas o pendientes).
+
+Una vez que se han creado las migraciones con `makemigrations`, se pueden aplicar a la base de datos utilizando el comando `migrate`. Este comando ejecuta las migraciones pendientes en el orden correcto, asegurando que la estructura de la base de datos esté sincronizada con los modelos de Django, así que es importante ejecutar `migrate` después de `makemigrations` para que los cambios en los modelos se reflejen en la base de datos cuando se realizan cambios en los modelos.
+
+### Django shell
+
+El shell de Django es una herramienta interactiva que permite a los desarrolladores ejecutar código Python en el contexto de una aplicación Django. Proporciona un entorno para probar y depurar código, interactuar con modelos y bases de datos, y realizar tareas administrativas sin necesidad de crear scripts o interfaces de usuario.
+
+Para acceder al shell de Django, se puede utilizar el siguiente comando:
 
 ```sh
-python manage.py shell
-``` 
-Y dentro del shell podemos interactuar con los modelos y la base de datos, por ejemplo:
+python3 manage.py shell
+```
+
+Esto abrirá un intérprete de Python con el entorno de Django cargado, lo que permite a los desarrolladores interactuar con sus modelos y realizar consultas a la base de datos de manera sencilla usando python y el ORM de Django, ejemplo:
 
 ```py
-from myapp.models import MyModel
+from minilibrary.models import Book, Author
 # Crear un nuevo objeto
-obj = MyModel(field1='value1', field2='value2')
-obj.save()
+orwell = Author.objects.create(name='George Orwell', birth_date='1903-06-25')
+orwell.save()
+book = Book.objects.create(title='1984', published_date='1949-06-08', author=orwell, pages=328, isbn='9780451524935')
+book.save()
+# Otra forma de crear un objeto
+author = Author(name='J.K. Rowling', birth_date='1965-07-31')
+author.save()
+book = Book(title='Harry Potter and the Philosopher\'s Stone', published_date='1997-06-26', author=author, pages=223, isbn='9780747532699')
+book.save()
 # Consultar objetos
-objs = MyModel.objects.all()
-for o in objs:
-    print(o.field1, o.field2)
+books = Book.objects.all()
+for b in books:
+    print(b.title, b.author.name)
 # Filtrar objetos
-filtered_objs = MyModel.objects.filter(field1='value1')
-for o in filtered_objs:
-    print(o.field1, o.field2)
+filtered_books = Book.objects.filter(author__name='J.K. Rowling')
+for b in filtered_books:
+    print(b.title, b.author.name)
 # Actualizar un objeto
-obj = MyModel.objects.get(id=1)
-obj.field1 = 'new_value'
-obj.save()
+book = Book.objects.get(id=1)
+book.title = 'Harry Potter and the Sorcerer\'s Stone'       
+book.save()
 # Eliminar un objeto
-obj = MyModel.objects.get(id=1)
-obj.delete()
-``` 
-
-### Crear un modelo
-
-```py
-# myapp/models.py
-from django.db import models
-
-class MyModel(models.Model):
-    field1 = models.CharField(max_length=100)
-    field2 = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)    
-    def __str__(self):
-        return self.field1
+book = Book.objects.get(id=1)
+book.delete()
 ```
 
-### Migraciones
+References: 
 
-```sh
-# Crear migraciones
-python manage.py makemigrations
-# Aplicar migraciones
-python manage.py migrate
-```
+- Django ORM documentation: https://docs.djangoproject.com/en/5.2/topics/db/models/
+- Django Fields documentation: https://docs.djangoproject.com/en/5.2/ref/models/fields/
+- Django QuerySet API reference: https://docs.djangoproject.com/en/5.2/ref/models/querysets/
+- Django Migrations documentation: https://docs.djangoproject.com/en/5.2/topics/migrations/
+- Django Admin documentation: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/
+- Django Database API reference: https://docs.djangoproject.com/en/5.2/ref/databases/
+- Django Relationships documentation: https://docs.djangoproject.com/en/5.2/topics/db/models/#relationships
+- Django Aggregation documentation: https://docs.djangoproject.com/en/5.2/topics/db/aggregation/
+- Django Query Expressions documentation: https://docs.djangoproject.com/en/5.2/ref/models/expressions/
+- Django Transactions documentation: https://docs.djangoproject.com/en/5.2/topics/db/transactions/
+- Django Custom Managers documentation: https://docs.djangoproject.com/en/5.2/topics/db/managers/
+- Django Raw SQL documentation: https://docs.djangoproject.com/en/5.2/topics/db/sql/
+- Django Performance optimization documentation: https://docs.djangoproject.com/en/5.2/topics/performance/
+- Django Testing with ORM documentation: https://docs.djangoproject.com/en/5.2/topics/testing/tools/#testing-with-the-orm
+
+
 ### Registrar el modelo en el admin
 
 ```py
@@ -701,6 +712,7 @@ admin.site.register(MyModel)
 ```sh
 python manage.py createsuperuser
 ``` 
+
 ### Acceder al panel de administración
 
 ```sh
