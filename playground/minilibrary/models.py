@@ -11,7 +11,8 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=200)
     published_date = models.DateField()
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+    author = models.ForeignKey(
+        Author, on_delete=models.CASCADE, related_name='books')
     pages = models.IntegerField(null=True, blank=True)
     isbn = models.CharField(max_length=13, unique=True, null=True, blank=True)
 

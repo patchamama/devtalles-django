@@ -643,10 +643,16 @@ Una vez que se han creado las migraciones con `makemigrations`, se pueden aplica
 
 El shell de Django es una herramienta interactiva que permite a los desarrolladores ejecutar código Python en el contexto de una aplicación Django. Proporciona un entorno para probar y depurar código, interactuar con modelos y bases de datos, y realizar tareas administrativas sin necesidad de crear scripts o interfaces de usuario.
 
-Para acceder al shell de Django, se puede utilizar el siguiente comando:
+Para acceder al shell de Django, se puede utilizar el siguiente comando (para salir es con exit() o Ctrl+D):
 
 ```sh
 python3 manage.py shell
+```
+
+Recomendable instalar IPython para una mejor experiencia interactiva en el shell de Django:
+
+```sh
+pip install ipython  # Opcional, para una mejor experiencia interactiva
 ```
 
 Esto abrirá un intérprete de Python con el entorno de Django cargado, lo que permite a los desarrolladores interactuar con sus modelos y realizar consultas a la base de datos de manera sencilla usando python y el ORM de Django, ejemplo:
@@ -657,27 +663,325 @@ from minilibrary.models import Book, Author
 orwell = Author.objects.create(name='George Orwell', birth_date='1903-06-25')
 orwell.save()
 book = Book.objects.create(title='1984', published_date='1949-06-08', author=orwell, pages=328, isbn='9780451524935')
-book.save()
-# Otra forma de crear un objeto
+# book.save() # no es necesario pues con create ya se crea y guarda en la base de datos
+# Otra forma de crear un objeto, en este caso se crea una instancia con valores en el constructor y luego se guarda
 author = Author(name='J.K. Rowling', birth_date='1965-07-31')
-author.save()
+author.name = 'J.K. Rowling' # Asignar el nombre del autor nuevo, permitiendo modificaciones antes de guardar
+author.name = author.name.upper()  # Convertir el nombre a mayúsculas
+author.save() # Guardar el autor en la base de datos
 book = Book(title='Harry Potter and the Philosopher\'s Stone', published_date='1997-06-26', author=author, pages=223, isbn='9780747532699')
 book.save()
-# Consultar objetos
-books = Book.objects.all()
+
+cuellar = Book.objects.get(title='La ciudad y los perros') # Obtener un libro por su título después de buscarlo en la base de datos
+rowling = Author.objects.get(name='J.K. Rowling') # Obtener un autor por su nombre después de buscarlo en la base de datos
+
+# Crear varios objetos a la vez para el autor Cuéllar almacenado en la variable mario.
+Book.objects.bulk_create([  # Insertar varios registros de una vez
+    Book(title='El amor en los tiempos del cólera', published_date='1985-03-05', author=rowling, pages=348, isbn='9780307389732'),
+    Book(title='La casa verde', published_date='1966-01-01', author=rowling, pages=400, isbn='9780141187690'),
+    Book(title='Conversación en La Catedral', published_date='1969-01-01', author=rowling, pages=600, isbn='9780141187706'),
+])
+
+# Insertar muchos objetos de una vez y medir el tiempo que tarda
+import time
+start = time.time()
+books = []
+for i in range(1000):
+    books.append(Book(title=f'Book {i}', published_date='2023-01-01', author=rowling, pages=100 + i, isbn=f'9780000000{i}'))
+    # De esta otra forma tardaría mucho pues cada vez que se hace un book.save() se hace una consulta a la base de datos:
+    # book = Book(title=f'Book {i}', published_date='2023-01-01', author=rowling, pages=100 + i, isbn=f'9780000000{i}')
+    # book.save()  # Guardar cada libro individualmente (más lento)
+Book.objects.bulk_create(books)  # Insertar 1000 libros de una vez
+end = time.time()
+print(f'Tiempo para insertar 1000 libros: {end - start:.2f} segundos')
+
+# Crear registros de forma segura con get_or_create
+# Esto evita crear registros duplicados si ya existen:
+mario = Author.objects.get_or_create(name='Mario Vargas Llosa', defaults={'birth_date': '1936-03-28'})
+ricardo = Author.objects.get_or_create(name='Ricardo Cuéllar', defaults={'birth_date': '1970-01-01'}) # Si el autor ya existe, no se crea uno nuevo, created será False sí no se creó
+
+# Consultar objetos (Consultas básicas con el ORM)
+books = Book.objects.all() # Obtener todos los objetos o registros (Select * from book)
 for b in books:
     print(b.title, b.author.name)
-# Filtrar objetos
+# Obtener un objeto por su ID
+book = Book.objects.get(id=1)
+book = Book.objects.get(id__exact=1) # Otra forma de obtener un objeto por su ID (especificando el operador exact) (select * from book where id = 1 limit 1)
+print(book.title, book.author.name)
+book = Book.objects.get(title='1984') 
+print(book.title, book.author.name)
+## Hacer búsqueda con campo de búsqueda (field lookup):
+## __exact: Igual a (case-sensitive) y es lo mismo que __exact (WHERE field = value)
+## __iexact: Igual a (case-insensitive) y es lo mismo que __iexact (WHERE field ILIKE value)
+## __contains: Contiene (case-insensitive), da igual __contains como __icontains (LIKE %value%)
+## __gt: Mayor que, greater than (field > %value%) field__gt=value
+## __gte: Mayor o igual que, greater and equal than (field >= %value%) field__gte=value
+## __lt: Menor que, less than (field < %value%) field__lt=value
+## __lte: Menor o igual que, less and equal than (field <= %value%) field__lte=value
+## __startswith: Empieza con (case-insensitive) y es lo mismo que __istartswith (LIKE value%)
+## __endswith: Termina con (case-insensitive) y es lo mismo que __iendswith (LIKE %value)
+## __in: En una lista de valores (field IN (value1, value2, ...)) field__in=[value1, value2, ...]
+## __range: En un rango de valores (field BETWEEN value1 AND value2) field__range=(value1, value2)
+## __isnull: Es nulo o no es nulo (field IS NULL o field IS NOT NULL) field__isnull=True o field__isnull=False
+## __regex: Coincide con una expresión regular (field REGEXP 'pattern') field__regex='pattern'
+## __iregex: Coincide con una expresión regular (case-insensitive) (field REGEXP 'pattern') field__iregex='pattern'
+## __date: Convierte el campo en una fecha específica, por ejemplo, un string a fecha (field = 'YYYY-MM-DD') field__date='YYYY-MM-DD', 
+## __year: Coincide con un año específico (field = YYYY) field__year=YYYY
+## __month: Coincide con un mes específico (field = MM) field__month=MM
+## __day: Coincide con un día específico (field = DD) field__day=DD
+## __week_day: Coincide con un día de la semana específico (field = 1-7) field__week_day=1-7 (1=Domingo, 2=Lunes, ..., 7=Sábado)
+## __time: Coincide con una hora específica (field = 'HH:MM:SS') field__time='HH:MM:SS'
+## __hour: Coincide con una hora específica (field = HH) field__hour=HH
+## __minute: Coincide con un minuto específico (    field = MM) field__minute=MM
+## __second: Coincide con un segundo específico (field = SS) field__second=SS
+## __search: Búsqueda de texto completo (field MATCH 'value') field
+book = Book.objects.filter(title__exact='catedral') # Búsqueda case-sensitive, exacto, en este caso busca 'Catedral' pero no 'catedral' ni 'CATEDRAL'
+book = Book.objects.filter(title__iexact='catedral') # Búsqueda case-insensitive, ignora mayúscula y minúsculas, en este caso busca 'Catedral' o 'catedral' o 'CATEDRAL' pero con el valor exacto
+book = Book.objects.filter(title__contains='Catedral') # Búsqueda case-insensitive (da igual __contains como __icontains), en este caso busca '%Catedral%' pero no 'catedral' ni 'CATEDRAL' (WHERE "minilibrary_book"."title" LIKE %catedral% ESCAPE '\')
+book = Book.objects.filter(title__icontains='catedral').exists() # Devuelve sí existe algún libro que contenga 'catedral' (case-insensitive)
+book = Book.objects.filter(title__startswith='La') # Búsqueda case-insensitive, en este caso busca 'La%' y da igual sí empieza como 'la%' ni 'LA%' (LIKE conv%)
+book = Book.objects.filter(id__gt=5) # Búsqueda mayor que
+book = Book.objects.filter(pages__gte=5) # Búsqueda mayor o igual que, pages >= 5
+book = Book.objects.filter(id__in=[1, 2, 3]) # Búsqueda en una lista de valores
+book = Book.objects.filter(id__in=[1, 2, 3, 4], title__icontains='catedral') # Búsqueda en una lista de valores (where id in (1, 2, 3, 4) and title like %catedral%)
+print(book[0].title, book[0].author.name, str(book.query)) # Obtener el primer libro que cumple con el filtro y ver el SQL generado por el ORM
+# Filtrando por fechas y rango de fechas
+books = Book.objects.filter(published_date__year=2023) # Búsqueda por año (WHERE "minilibrary_book"."published_date" BETWEEN 2023-01-01 AND 2023-12-31) 
+from datetime import date
+books = Book.objects.filter(published_date=date(2000, 1, 1)) 
+books = Book.objects.filter(published_date__lte=date(2000, 1, 1)) 
+books_in_range = Book.objects.filter(published_date__range=['2000-01-01', '2023-12-31']) # Búsqueda en un rango de fechas (where published_date between '2000-01-01' and '2023-12-31')
+for b in books_in_range:
+    print(b.title, b.published_date)
+print(books_in_range.query) # Ver el SQL generado por el ORM
+# Encadenamiento de filtros (AND) se hace con varios filter() uno detrás de otro
+books = Book.objects.filter(published_date__year=2023).filter(author__name__icontains='Rowling') # Búsqueda por año y autor (where published_date between '
+# Exclusión de registros (AND NOT)
+books_not_2023 = Book.objects.exclude(published_date__year=2023) # Búsqueda por año excluyendo 2023 (where published_date not between '2023-01-01' and '2023-12-31')
+for b in books_not_2023:
+    print(b.title, b.published_date)
+books = Book.objects.filter(published_date__year=2023).filter(author__name__icontains='Rowling').exclude(title__icontains='Harry') # Búsqueda por año y autor excluyendo títulos que contengan 'Harry' (where published_date between '2023-01-01' and '2023-12-31' and author.name like %Rowling% and title not like %Harry%)
+# Limitando conjunto de resultados (list slicing)
+books_limited = Book.objects.all()[:5] # Obtener los primeros 5 objetos (equivalente a LIMIT 5)
+books_limited = Book.objects.all()[5:10] # Obtener los siguientes 5 objetos (equivalente a LIMIT 5 OFFSET 5)
+books_limited = Book.objects.order_by('?')[0] # Obtener el 1 primer libro al azar (equivalente a ORDER BY RAND() LIMIT 1)
+# Consulta avanzada _Q para consultas complejas con OR y AND
+from django.db.models import Q
+# Búsqueda de libros publicados en 2023 o cuyo autor sea 'J.K. Rowling'
+books = Book.objects.filter(Q(published_date__year=2023) | Q(author__name__icontains='Rowling')) # Búsqueda con OR (where published_date between '2023-01-01' and '2023-12-31' or author.name like %Rowling%)
+books = Book.objects.filter(Q(published_date__year=2023) & ~Q(author__name__icontains='Rowling')) # Búsqueda con AND NOT (where published_date between '2023-01-01' and '2023-12-31' and author.name not like %Rowling%)
+for b in books:
+    print(b.title, b.published_date, b.author.name)
+# Consulta avanzada con F para comparar campos entre sí y evitar hacer consultas adicionales a la base de datos
+from django.db.models import F
+# Búsqueda de libros cuyo número de páginas sea mayor que el ID del libro
+books = Book.objects.filter(pages__gt=F('id')) # Búsqueda con F (where pages > id)
+for b in books:
+    print(b.title, b.pages, b.id)
+# Consulta avanzada con Func para usar funciones de la base de datos
+from django.db.models import Func
+# Búsqueda de libros cuyo título en mayúsculas contenga 'CATEDRAL'
+books = Book.objects.filter(title__icontains=Func('title', function='UPPER')) # Búsqueda con Func (where UPPER(title) like %CATEDRAL%)
+
+# Imaginemos que tenemos un campo de tipo string que guarda una fecha, podemos convertirlo en el tipo fecha con __date
+books_in_year = Book.objects.filter(published_string__date=date(2023, 1, 1)) # Búsqueda por año (where published_date = 2023)
+for b in books_in_year:
+    print(b.title, b.published_date)
+print(books_in_year.query) # Ver el SQL generado por el ORM
+# Filtrando por valores nulos
+books_with_no_date = Book.objects.filter(published_date__isnull=True) # Búsqueda por valores nulos (where published_date is null)
+for b in books_with_no_date:
+    print(b.title, b.published_date)
+print(books_with_no_date.query) # Ver el SQL generado por el ORM
+# Obtener objetos o registros por la posición
+first = Book.objects.first()
+print(first.title, first.author.name)
+last = Book.objects.last()
+print(last.title, last.author.name)
+# Obtener un subconjunto de objetos (paginación)
+subset = Book.objects.all()[0:5] # Obtener los primeros 5 objetos (equivalente a LIMIT 5)
+for b in subset:
+    print(b.title, b.author.name)
+# Ordenar objetos por un campo (especificar el campo por el cual se quiere ordenar, por defecto es ascendente)
+# Select * from book order by published_date asc;
+ordered_books = Book.objects.all().order_by('published_date') # Ordenar por fecha de publicación ascendente
+for b in ordered_books:
+    print(b.title, b.published_date)
+ordered_books_desc = Book.objects.all().order_by('-title') # Ordenar por title descendente
+for b in ordered_books_desc:
+    print(b.title, b.published_date)
+# Ordenar por varios campos
+# select * from book inner join author on book.author_id = author.id order by author.name asc, title desc;
+ordered_books_multi = Book.objects.all().order_by('author__name', '-title') # Ordenar por autor ascendente y luego por título descendente
+for b in ordered_books_multi:
+    print(b.title, b.author.name, b.published_date)
+print(ordered_books_multi.query) # Obtener el sql generado por el ORM
+# Obtener resultados en modo random 
+books = Book.objects.order_by('?')[:5] # Obtener 5 libros al azar (mno usar Book.objects.all().order_by('?') pues no funcionaría correctamente)
+for b in books:
+    print(b.title, b.author.name)
+# Filtrar objetos o registros (where)
+# Select * from book where author.name = 'J.K. Rowling';
 filtered_books = Book.objects.filter(author__name='J.K. Rowling')
 for b in filtered_books:
     print(b.title, b.author.name)
-# Actualizar un objeto
+filtered_books2 = Book.objects.filter(title__icontains='catedral') # Filtrar por título
+for b in filtered_books2:
+    print(b.title, b.author.name)
+print(filtered_books2.query) # Obtener el sql generado por el ORM
+filtered_books3 = Book.objects.filter(title='1984', published_date='1949-06-08') # Filtrar por title y año de publicación
+print(filtered_books3.count()) # Contar cuántos libros hay con ese título y año de publicación
+print(filtered_books3.exists()) # Verificar si existe algún libro con ese título y año de publicación
+print(filtered_books3.first()) # Obtener el primer libro que cumple con el filtro
+print(filtered_books3.last()) # Obtener el último libro que cumple con el filtro
+print(filtered_books3.values('title', 'author__name')) # Obtener solo los campos title y author.name
+print(filtered_books3.values_list('title', 'author__name')) # Obtener solo los campos title y author.name en forma de tupla
+print(filtered_books3.query) # Obtener el sql generado por el ORM
+# Filtrar con operadores avanzados
+# Select * from book where published_date > '2000-01-01';
+recent_books = Book.objects.filter(published_date__gt='2000-01-01')
+for b in recent_books:
+    print(b.title, b.published_date)
+# Select * from book where published_date >= '2000-01-01';
+recent_books_eq = Book.objects.filter(published_date__gte='2000-01-01')
+for b in recent_books_eq:       
+    print(b.title, b.published_date)
+# Select * from book where published_date < '2000-01-01';
+old_books = Book.objects.filter(published_date__lt='2000-01-01')    
+for b in old_books:
+    print(b.title, b.published_date)
+
+# Actualizar un objeto o registro
 book = Book.objects.get(id=1)
 book.title = 'Harry Potter and the Sorcerer\'s Stone'       
 book.save()
-# Eliminar un objeto
+# Actualizar varios objetos a la vez (CUIDADO CON ESTO! puede actualizar muchos registros sin querer)
+Book.objects.filter(author__name='J.K. Rowling').update(pages=250) # Actualizar varios registros a la vez (todos los libros de J.K. Rowling tendrán 250 páginas)
+
+# Eliminar un objeto o registro
 book = Book.objects.get(id=1)
 book.delete()
+book = Book.objects.get(title='1984')
+book.delete()
+# Eliminar varios objetos a la vez (CUIDADO CON ESTO! puede eliminar muchos registros sin querer)
+Book.objects.filter(published_date__year__gt=2000).delete() # Eliminar varios registros a la vez (todos los libros publicados antes del año 2000 serán eliminados)
+## Comportamientos del on_delete:
+## CASCADE: Elimina los registros relacionados (por defecto)
+## PROTECT: Evita la eliminación si hay registros relacionados (lanza una excepción)
+## SET_NULL: Establece el campo relacionado a NULL (requiere null=True en el campo)
+## SET_DEFAULT: Establece el campo relacionado al valor por defecto (requiere default)
+## DO_NOTHING: No hace nada (puede causar errores de integridad referencial)
+# Soft Delete (eliminación lógica): Sirve para marcar un registro como eliminado sin eliminarlo físicamente de la base de datos
+##  En lugar de eliminar el registro, se puede marcar como eliminado con un campo booleano
+##  book.is_deleted = True # Marcar el libro como eliminado y ya existe este campo para ello: is_deleted = models.BooleanField(default=False)
+##  book.save() # Guardar el cambio
+## Book.objects.filter(is_deleted=False) # Filtrar solo los libros que no están eliminados
+
+# Aggregates
+# A diferencia de annotate, aggregate devuelve un diccionario con los resultados de la agregación y no un QuerySet de objetos, por lo que no se pueden encadenar más filtros o métodos después de un aggregate y siempre devuelve un solo resultado global y no varios como con annotate.
+from django.db.models import Count, Avg, Max, Min, Sum
+# Contar cuántos libros hay en la base de datos
+book_count = Book.objects.aggregate(total_libros = Count('id'))
+print(f'Total de libros: {book_count['total_libros']}')
+# Contar cuántos autores hay en la base de datos
+author_count = Author.objects.aggregate(total_autores = Count('id'))['total_autores']
+print(f'Total de autores: {author_count}')
+# Calcular el promedio de páginas de todos los libros
+average_pages = Book.objects.aggregate(promedio_paginas = Avg('pages'))['promedio_paginas']
+print(f'Promedio de páginas: {average_pages}')
+# Calcular el número máximo de páginas de un libro
+max_pages = Book.objects.aggregate(maximo_paginas = Max('pages'))['maximo_paginas']
+# SELECT MAX("minilibrary_book"."pages") AS "maximo_paginas" FROM "minilibrary_book"
+print(f'Máximo de páginas: {max_pages}') 
+# Conocer el sql generado por el ORM
+from django.db import connection
+print(connection.queries) # Ver todas las consultas SQL ejecutadas en la base de datos hasta el momento
+
+# Annotate
+# A diferencia de aggregate, annotate devuelve un QuerySet de objetos con los resultados de la agregación y se pueden encadenar más filtros o métodos después de un annotate y devuelve varios resultados, uno por cada objeto en el QuerySet.
+from django.db.models import Count, Avg
+# Contar cuántos libros tiene cada autor
+authors_with_book_count = Author.objects.annotate(book_count=Count('books')) # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author y de esta forma se cuenta cuántos libros tiene cada autor 
+for author in authors_with_book_count:
+    print(f'Autor: {author.name}, Número de libros: {author.book_count}')
+# Calcular el promedio de páginas por autor
+authors_with_avg_pages = Author.objects.annotate(avg_pages=Avg('books__pages')) # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
+for author in authors_with_avg_pages:
+    print(f'Autor: {author.name}, Promedio de páginas: {author.avg_pages}')
+# SQL generado por el ORM
+print(authors_with_avg_pages.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date", AVG("minilibrary_book"."pages") AS "avg_pages" FROM "minilibrary_author" LEFT OUTER JOIN "minilibrary_book" ON ("minilibrary_author"."id" = "minilibrary_book"."author_id") GROUP BY "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date"
+
+# Transaction atomic (Transacciones atómicas)
+from django.db import transaction, IntegrityError
+# Realizar varias operaciones de base de datos de forma atómica (si una falla, se revierten todas)
+try:
+    with transaction.atomic():
+        author = Author.objects.create(name='New Author', birth_date='1970-01-01')
+        book1 = Book.objects.create(title='New Book 1', published_date='2023-01-01', author=author, pages=100, isbn='9780000000001')
+        book2 = Book.objects.create(title='New Book 2', published_date='2023-01-01', author=author, pages=150, isbn='9780000000002')
+        # Simular un error para probar la transacción atómica
+        raise Exception('Simulated error')
+except IntegrityError as e:
+    print(f'Transaction rolled back due to integrity error: {e}')
+except Exception as e:
+    print(f'Transaction rolled back due to error: {e}')
+# Verificar que no se crearon los registros debido al error
+print(Author.objects.filter(name='New Author').exists()) # Debería ser False
+print(Book.objects.filter(title='New Book 1').exists()) # Debería ser False
+print(Book.objects.filter(title='New Book 2').exists()) # Debería ser False
+
+# Optimización de consultas con select_related y prefetch_related
+# select_related se usa para relaciones ForeignKey y OneToOne, hace un JOIN y trae los datos relacionados en una sola consulta
+# prefetch_related se usa para relaciones ManyToMany y reverse ForeignKey, hace una consulta adicional y luego une los datos en Python
+# Obtener todos los libros con sus autores usando select_related (evita consultas adicionales a la base de datos)
+books_with_authors = Book.objects.select_related('author').all() # Aquí 'author' es el nombre del campo ForeignKey en el modelo Book
+for book in books_with_authors:
+    print(f'Libro: {book.title}, Autor: {book.author.name}')
+# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos)
+authors_with_books = Author.objects.prefetch_related('books').all() # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
+for author in authors_with_books:
+    print(f'Autor: {author.name}')
+    for book in author.books.all():
+        print(f' - Libro: {book.title}')    
+
+# Consultas con relaciones (JOINs)
+##  Obtener todos los libros de un autor específico
+books_by_rowling = Book.objects.filter(author__name='J.K. Rowling') # Filtrar libros por el nombre del autor (JOIN implícito), aquí author es el nombre del campo ForeignKey en el modelo Book
+# Ver el resultado SQL generado por el ORM
+print(Book.objects.filter(author__name='J.K. Rowling').query) # Ver el SQL generado por el ORM
+## En el caso de un insert o get_or_create no se puede ver el SQL generado directamente, pero se puede usar el logging de Django para ver las consultas SQL ejecutadas en la base de datos.
+from django.db import connection
+# Author.objects.get_or_create(
+#     name="Mario Vargas Llosa",
+#     defaults={"birth_date": "1936-03-28"}
+# )
+for q in connection.queries:
+    print(q["sql"]) # Ver todas las consultas SQL ejecutadas en la base de datos hasta el momento
+## También se puede ejecutar este código al inicio del shell de Django para ver todas las consultas SQL generadas por el ORM en la consola:
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('django.db.backends')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
+# Otra forma de ver las consultas SQL generadas por el ORM es configurando el logging en settings.py:
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,      
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }
+# Ahora al ejecutar cualquier consulta se verá el SQL generado en la consola
+book, created = Book.objects.get_or_create(title='New Book', defaults={'published_date': '2023-01-01', 'author': rowling, 'pages': 100,
 ```
 
 References: 
