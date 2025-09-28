@@ -1240,6 +1240,13 @@ for user in users_with_many_loans:
     print(f'User: {user.username}, Loan Count: {user.loan_count}')
 # SQL generado por el ORM
 print(users_with_many_loans.query) # Ver el SQL generado por el ORM
+
+# Buscar reviews con contraseñas igual a excelente 
+excellent_reviews = Review.objects.filter(text__icontains='excelente') # Buscar reviews que contengan la palabra 'excelente' (case insensitive)
+for review in excellent_reviews:
+    print(f'Review for {review.book.title} by {review.user.username}: {review.rating}/5 - {review.text}')
+# SQL generado por el ORM
+print(excellent_reviews.query) # Ver el SQL generado por el ORM
 ```
 
 References: 
