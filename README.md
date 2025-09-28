@@ -931,19 +931,126 @@ print(Author.objects.filter(name='New Author').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 1').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 2').exists()) # Debería ser False
 
-# Optimización de consultas con select_related y prefetch_related
-# select_related se usa para relaciones ForeignKey y OneToOne, hace un JOIN y trae los datos relacionados en una sola consulta
+# Sección 9: Relaciones entre modelos y optimización de consultas
+
+# Relación entre modelos (ForeignKey, OneToOneField, ManyToManyField)
+# ForeignKey: Relación uno a muchos (un autor puede tener muchos libros)
+# OneToOneField: Relación uno a uno (un perfil de usuario tiene un solo usuario)
+# ManyToManyField: Relación muchos a muchos (un libro puede tener muchos géneros y un género puede tener muchos libros)
+# unique y primary_key son mutuamente excluyentes en los campos de un modelo, es decir, no se pueden usar ambos al mismo tiempo en un mismo campo.
+#   class Book(models.Model):
+#       title = models.CharField(max_length=200, unique=True) # El título del libro debe ser único
+#       author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books') # Un autor puede tener muchos libros, related_name permite acceder a los libros de un autor con author.books.all()
+#   class Author(models.Model):
+#       name = models.CharField(max_length=100)
+#       birth_date = models.DateField()
+#       profile = models.OneToOneField(User, on_delete=models.CASCADE) # Un perfil de usuario tiene un solo usuario
+#   class Genre(models.Model):
+#       name = models.CharField(max_length=100, unique=True)
+#       books = models.ManyToManyField(Book, related_name='genres') # Un libro puede tener muchos géneros y un género puede tener muchos libros 
+# Crear un autor y varios libros relacionados
+author = Author.objects.create(name='Gabriel García Márquez', birth_date='1927-03-06')
+book1 = Book.objects.create(title='Cien años de soledad', published_date='1967-05-30', author=author, pages=417, isbn='1780307474728')
+book2 = Book.objects.create(title='El amor en los tiempos del cólera', published_date='1985-03-05', author=author, pages=348, isbn='1780307389732')
+# Acceder al autor desde un libro (relación directa)
+print(f'Libro: {book1.title}, Autor: {book1.author.name} Birth Date: {book1.author.birth_date}') # Acceder al autor desde un libro (relación directa) usando el campo ForeignKey author
+print(author.id, author.name, author.birth_date, author.books.all()) # Acceder a los libros de un autor (relación inversa) usando el related_name 'books' definido en el modelo Book para el campo ForeignKey author (relación inversa o related_name)
+# Consultar libros de un autor (relación inversa)
+books_by_author = author.books.all() # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
+for book in books_by_author:
+    print(f'Libro: {book.title}, Autor: {book.author.name}')
+finction = Genre.objects.create(name='Ficción')
+fantasy = Genre.objects.create(name='Fantasía')
+drama = Genre.objects.create(name='Drama')
+# Sí existiera un género ya creado se podría usar get_or_create para no crear duplicados:
+# finction, created = Genre.objects.get_or_create(name='Ficción') # Si el género ya existe, no se crea uno nuevo, created será False sí no se creó
+
+orwell = Author.objects.get(name='George Orwell')
+book3 = Book.objects.create(title='1984', published_date='1949-06-08', author=orwell, pages=328, isbn='9780451533335')
+book3.genres.add(finction, drama) # Añadir géneros a un libro (relación muchos a muchos)
+rowling = Author.objects.get(name='J.K. Rowling')
+book4 = Book.objects.create(title='Harry Potter and the Chamber of Secrets', published_date='1998-07-02', author=rowling, pages=251, isbn='97807472228493')
+book4.genres.add(fantasy, drama) # Añadir géneros a un libro (relación muchos a muchos)
+# Consultar géneros de un libro (relación directa)
+book = Book.objects.get(title='1984')
+for genre in book.genres.all(): # Aquí 'genres' es el related_name definido en el modelo Book para el campo ManyToManyField genres
+    print(f'Género: {genre.name}')
+# Consultar libros de un género (relación inversa)
+genre = Genre.objects.get(name='Drama')
+for book in genre.books.all(): # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books
+    print(f'Libro: {book.title}, Género: {genre.name}')
+for book in fiction.books.all(): # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books, en este caso se accede a los libros del género Ficción y se imprime el título del libro y el nombre del género
+    print(f'Libro: {book.title}, Género: {fiction.name}')
+
+book = Book.objects.get(title='1984')
+detail = BookDetail.objects.create(book=book, summary='A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism.', language='English', publisher='Secker & Warburg', cover_url='https://example.com/1984.jpg')
+print(f'Book: {detail.book.title}, Summary: {detail.summary}, Language: {detail.language}, Publisher: {detail.publisher}, Cover URL: {detail.cover_url}') # Acceder al libro desde el detalle del libro (relación directa)
+book_detail = BookDetail.objects.get(book__title='1984') # Aquí 'book' es el nombre del campo OneToOneField en el modelo BookDetail
+print(f'Book: {book_detail.book.title}, Summary: {book_detail.summary}, Language: {book_detail.language}, Publisher: {book_detail.publisher}, Cover URL: {book_detail.cover_url}') # Acceder al libro desde el detalle del libro (relación directa)
+
+# Optimización de consultas con select_related (solo para foreignkeys y OneToOne keys) y prefetch_related
+# Problema N+1: Ocurre cuando se hacen muchas consultas a la base de datos innecesarias al acceder a relaciones entre modelos, por ejemplo, al iterar sobre un conjunto de objetos y acceder a un campo relacionado en cada iteración. Entonces por cada objeto que se recorre, se hace una consulta adicional a la base de datos para obtener el objeto relacionado, lo que puede generar muchas consultas y afectar el rendimiento.
+# Solución: Usar select_related y prefetch_related para reducir el número de consultas a la base de datos.
+# select_related se usa para relaciones ForeignKey y OneToOne, hace un JOIN y trae los datos relacionados en una sola consulta/llamada sin hacer consultas adicionales a la base de datos
 # prefetch_related se usa para relaciones ManyToMany y reverse ForeignKey, hace una consulta adicional y luego une los datos en Python
 # Obtener todos los libros con sus autores usando select_related (evita consultas adicionales a la base de datos)
+# Sin optimizar con select_related:
+books = Book.objects.all() # Aquí se hace 1 consulta a la base de datos
+for book in books:
+    print(f'Libro: {book.title}, Autor: {book.author.name}') # Aquí se hace 1 consulta adicional por cada libro para obtener el autor (N consultas adicionales)
+# SQL generado por el ORM 
+print(books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book"
+# Y por cada libro se haría otra consulta para obtener el autor:
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [1]
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [2]
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [3]
+    # ...
+
+# Con select_related se hace 1 sola consulta a la base de datos con un JOIN y se traen los datos relacionados de los autores de una sola vez:
 books_with_authors = Book.objects.select_related('author').all() # Aquí 'author' es el nombre del campo ForeignKey en el modelo Book
 for book in books_with_authors:
     print(f'Libro: {book.title}, Autor: {book.author.name}')
-# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos)
+# SQL generado por el ORM
+print(books_with_authors.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_book" INNER JOIN "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") 
+
+
+# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos) y funciona en relaciones inversas y ManyToMany
+# Sin optimizar con prefetch_related:
+genres = Genre.objects.all() # Aquí se hace 1 consulta a la base de datos
+for genre in genres:
+    for book in genre.books.all(): # Aquí se hace 1 consulta adicional por cada género para obtener sus libros (N consultas adicionales)
+        print(f'Género: {genre.name}, Libro: {book.title}')
+# Con prefetch_related se hace 2 consultas a la base de datos, una para los géneros y otra para los libros, y luego une los datos en Python:
+genres_with_books = Genre.objects.prefetch_related('books').all() # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books
+for genre in genres_with_books:
+    print(f'Género: {genre.name}')
+    for book in genre.books.all():
+        print(f' - Libro: {book.title}')
+# SQL generado por el ORM
+print(genres_with_books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_genre"."id", "minilibrary_genre"."name" FROM "minilibrary_genre"
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_genre_books"."genre_id" FROM "minilibrary_book" INNER JOIN "minilibrary_genre_books" ON ("minilibrary_book"."id" = "minilibrary_genre_books"."book_id") WHERE "minilibrary_genre_books"."genre_id" IN (%s, %s)  [1, 2]
+# Y con prefetch_related se haría una consulta para obtener todos los registros relacionados de los libros de una sola vez:
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_genre_books"."genre_id" FROM "minilibrary_book" INNER JOIN "minilibrary_genre_books" ON ("minilibrary_book"."id" = "minilibrary_genre_books"."book_id") WHERE "minilibrary_genre_books"."genre_id" IN (%s, %s, %s)  [1, 2, 3]
+# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos) y funciona en relaciones inversas y ManyToMany
+authors = Author.objects.all() # Aquí se hace 1 consulta a la base de datos
+for author in authors:
+    for book in author.books.all(): # Aquí se hace 1 consulta adicional por cada autor para obtener sus libros (N consultas adicionales)
+        print(f'Autor: {author.name}, Libro: {book.title}')
+# Con prefetch_related se hace 2 consultas a la base de datos, una para los autores y otra para los libros, y luego une los datos en Python:
 authors_with_books = Author.objects.prefetch_related('books').all() # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
 for author in authors_with_books:
     print(f'Autor: {author.name}')
     for book in author.books.all():
         print(f' - Libro: {book.title}')    
+# SQL generado por el ORM
+print(authors_with_books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author"
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" WHERE "minilibrary_book"."author_id" IN (%s, %s, %s)  [1, 2, 3]    
+# Con prefetch_related se haría una sola consulta para obtener todos los registros relacionados de los libros de una sola vez:
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" inner join "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") WHERE "minilibrary_book"."author_id"  
 
 # Consultas con relaciones (JOINs)
 ##  Obtener todos los libros de un autor específico
@@ -982,6 +1089,164 @@ logger.addHandler(logging.StreamHandler())
 # }
 # Ahora al ejecutar cualquier consulta se verá el SQL generado en la consola
 book, created = Book.objects.get_or_create(title='New Book', defaults={'published_date': '2023-01-01', 'author': rowling, 'pages': 100,
+
+# Modelo User
+## Es un modelo que viene por defecto en Django para manejar usuarios y autenticación
+## python3 manage.py shell
+from django.contrib.auth.models import User
+# Crear un nuevo usuario
+new_user = User.objects.create_user(username='newuser', password='password123')
+print(new_user.username, new_user.is_staff, new_user.is_superuser) # Acceder a los campos del modelo User
+# Crear un superusuario
+super_user = User.objects.create_superuser(username='admin', password='admin123')
+print(super_user.username, super_user.is_staff, super_user.is_superuser) # Acceder a los campos del modelo User
+# Autenticar un usuario
+from django.contrib.auth import authenticate
+user = authenticate(username='newuser', password='password123')
+if user is not None:
+    print(f'Usuario autenticado: {user.username}')
+else:
+    print('Credenciales inválidas')
+# Cambiar la contraseña de un usuario
+user = User.objects.get(username='newuser')
+user.set_password('newpassword123')
+user.save()
+# Verificar la nueva contraseña
+user = authenticate(username='newuser', password='newpassword123')
+if user is not None:
+    print(f'Usuario autenticado con nueva contraseña: {user.username}')
+else:
+    print('Credenciales inválidas con nueva contraseña')
+# Listar todos los usuarios
+users = User.objects.all()
+for u in users:
+    print(u.username, u.is_staff, u.is_superuser)
+
+
+## Crear un perfil de usuario extendiendo el modelo User con OneToOneField
+# myapp/models.py
+from django.contrib.auth.models import User
+from django.db import models
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE) # Relación uno a uno con el modelo User
+    bio = models.TextField(blank=True, null=True) # Campo adicional para la biografía del usuario
+    birth_date = models.DateField(blank=True, null=True) # Campo adicional para la fecha de nacimiento del usuario
+    def __str__(self):
+        return self.user.username
+# Crear un perfil de usuario para un usuario existente
+user = User.objects.get(username='newuser')
+profile = UserProfile.objects.create(user=user, bio='This is my bio.', birth_date='1990-01-01')
+print(profile.user.username, profile.bio, profile.birth_date) # Acceder a los campos del modelo UserProfile
+# Acceder al perfil de usuario desde el modelo User (relación inversa)
+user = User.objects.get(username='newuser')
+print(user.userprofile.bio, user.userprofile.birth_date) # Aquí 'userprofile' es el nombre del modelo UserProfile en minúsculas
+# Realizar migraciones para crear la tabla del modelo UserProfile en la base de datos
+# python manage.py makemigrations
+# python manage.py migrate
+
+## Otra forma de acceder al modelo User más fácilmente (recomendado) y evitar problemas si se usa un modelo User personalizado en settings.py
+from django.contrib.auth import get_user_model
+User = get_user_model() # Obtener el modelo User actual (puede ser el modelo por defecto o un modelo personalizado)
+user = User.objects.get(username='newuser') # Usar el modelo User para hacer consultas
+print(user.username, user.is_staff, user.is_superuser) # Acceder a los campos del modelo User
+## Crear un usuario con el modelo User obtenido con get_user_model
+new_user2 = User.objects.create_user(username='anotheruser', email='anotheruser@example.com', password='password123', first_name='Another', last_name='User')
+print(new_user2.username, new_user2.is_staff, new_user2.is_superuser) # Acceder a los campos del modelo User
+user= User.objects.get(username='anotheruser')
+print(user.username, user.email, user.first_name, user.last_name) # Acceder a los campos del modelo User
+
+book = Book.objects.create(title='Django for Beginners', published_date='2023-01-01', author=rowling, pages=300, isbn='9780000000003')
+print(book.title, book.author.name) # Acceder a los campos del modelo Book
+review = Review.objects.create(book=book, user=user, rating=5, text='Great book for learning Django!')
+print(f'Review for {review.book.title} by {review.user.username}: {review.rating}/5 - {review.text}')
+
+Loan.objects.create(book=book, user=user, loan_date='2023-10-01', return_date='2023-10-15')
+loans = Loan.objects.all()
+for loan in loans:
+    print(f'Loan: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')
+returned_loans = Loan.objects.filter(is_returned=False)
+for loan in returned_loans:
+    print(f'Returned Loan: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')   
+
+from django.utils import timezone
+loan = Loan.objects.get(id=1)
+loan.returned_date = timezone.now()
+loan.is_returned = True
+loan.save()
+print(f'Loan updated: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')
+
+## Definir un modelo personalizado que extienda el modelo User de Django. Agregar al final de settings.py:
+# AUTH_USER_MODEL = 'myapp.CustomUser' # Aquí 'myapp' es el nombre de la aplicación donde se define el modelo CustomUser
+# Crear un modelo personalizado que extienda el modelo User de Django y agregar campos adicionales como bio y birth_date
+# myapp/models.py
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+class CustomUser(AbstractUser):
+    bio = models.TextField(blank=True, null=True) # Campo adicional para la biografía del usuario
+    birth_date = models.DateField(blank=True, null=True) # Campo adicional para la fecha de nacimiento del usuario
+    def __str__(self):
+        return self.username
+# Realizar migraciones para crear la tabla del modelo CustomUser en la base de datos
+# python manage.py makemigrations
+# python manage.py migrate
+# Crear un nuevo usuario con el modelo personalizado
+custom_user = CustomUser.objects.create_user(username='customuser', password='password123', bio='This is a custom user.', birth_date='1990-01-01')
+print(custom_user.username, custom_user.bio, custom_user.birth_date) # Acceder a los campos del modelo CustomUser
+
+
+# Uso de through en ManyToManyField para agregar campos adicionales a la relación en una tabla intermedia
+# myapp/models.py 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+user = User.objects.first() # Obtener el primer usuario
+book = Book.objects.first() # Obtener el primer libro
+Recomendation.objects.create(user=user, book=book, note='Great book for learning Django!') # Crear una recomendación con campos adicionales en la tabla intermedia
+# Sí no lo hicieramos así, no podríamos agregar la nota a la recomendación, que es un campo intermedio en la relación ManyToMany entre User y Book que hemos creado con el modelo Recomendation y el parámetro through en el campo ManyToManyField  
+
+# Seeds o datos iniciales
+# Importar datos iniciales desde un archivo python seeds/seeds.py
+# python3 manage.py shell < seeds/seeds.py
+# Importar datos iniciales desde un archivo JSON
+# python3 manage.py loaddata seeds/initial_data.json
+# Exportar datos a un archivo JSON
+# python3 manage.py dumpdata minilibrary > seeds/initial_data.json
+
+
+# Consultas avanzadas 
+from django.db.models import Count, Avg 
+# Contar sí alguno de los libros tiene alguna reseña y un promedio de calificaciones > 1.5
+books_with_reviews = Book.objects.annotate(num_reviews=Count('reviews'), avg_rating=Avg('reviews__rating')).filter(num_reviews__gt=1, avg_rating__gt=1.5)
+for book in books_with_reviews:
+    print(f'Book: {book.title}, Review Count: {book.num_reviews}, Average Rating: {book.avg_rating}')
+# SQL generado por el ORM
+print(books_with_reviews.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", COUNT("minilibrary_review"."id") AS "num_reviews", AVG("minilibrary_review"."rating") AS "avg_rating" FROM "minilibrary_book" LEFT OUTER JOIN "minilibrary_review" ON ("minilibrary_book"."id" = "minilibrary_review"."book_id") GROUP BY "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" HAVING COUNT("minilibrary_review"."id") > 0 AND AVG("minilibrary_review"."rating") > 1.5
+
+# Buscar libros actualmente prestados (no devueltos)
+Book.objects.filter(loans__is_returned=False).distinct() # Aquí 'loans' es el related_name definido en el modelo Loan para el campo ForeignKey book, distinct() se usa para evitar duplicados sí un libro tiene varios préstamos no devueltos
+# SQL generado por el ORM
+print(Book.objects.filter(loans__is_returned=False).distinct().query) # Ver el SQL generado por el ORM
+# SELECT DISTINCT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."publication_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" INNER JOIN "minilibrary_loan" ON ("minilibrary_book"."id" = "minilibrary_loan"."book_id") WHERE NOT "minilibrary_loan"."is_returned"
+
+# Libros sin reviews
+Book.objects.filter(reviews__isnull=True) # Aquí 'reviews' es el related_name definido en el modelo Review para el campo ForeignKey book
+Book.objects.annotate(num_reviews=Count('reviews')).filter(num_reviews=0) # Otra forma de obtener libros sin reviews
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+# Usuarios con más de 2 préstamos
+users_with_many_loans = User.objects.annotate(loan_count=Count('loans')).filter(loan_count__gt=2) # Aquí 'loans' es el related_name definido en el modelo Loan para el campo ForeignKey user
+for user in users_with_many_loans:
+    print(f'User: {user.username}, Loan Count: {user.loan_count}')
+# SQL generado por el ORM
+print(users_with_many_loans.query) # Ver el SQL generado por el ORM
+
+# Buscar reviews con contraseñas igual a excelente 
+excellent_reviews = Review.objects.filter(text__icontains='excelente') # Buscar reviews que contengan la palabra 'excelente' (case insensitive)
+for review in excellent_reviews:
+    print(f'Review for {review.book.title} by {review.user.username}: {review.rating}/5 - {review.text}')
+# SQL generado por el ORM
+print(excellent_reviews.query) # Ver el SQL generado por el ORM
 ```
 
 References: 
