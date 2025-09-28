@@ -931,19 +931,126 @@ print(Author.objects.filter(name='New Author').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 1').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 2').exists()) # Debería ser False
 
-# Optimización de consultas con select_related y prefetch_related
-# select_related se usa para relaciones ForeignKey y OneToOne, hace un JOIN y trae los datos relacionados en una sola consulta
+# Sección 9: Relaciones entre modelos y optimización de consultas
+
+# Relación entre modelos (ForeignKey, OneToOneField, ManyToManyField)
+# ForeignKey: Relación uno a muchos (un autor puede tener muchos libros)
+# OneToOneField: Relación uno a uno (un perfil de usuario tiene un solo usuario)
+# ManyToManyField: Relación muchos a muchos (un libro puede tener muchos géneros y un género puede tener muchos libros)
+# unique y primary_key son mutuamente excluyentes en los campos de un modelo, es decir, no se pueden usar ambos al mismo tiempo en un mismo campo.
+#   class Book(models.Model):
+#       title = models.CharField(max_length=200, unique=True) # El título del libro debe ser único
+#       author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books') # Un autor puede tener muchos libros, related_name permite acceder a los libros de un autor con author.books.all()
+#   class Author(models.Model):
+#       name = models.CharField(max_length=100)
+#       birth_date = models.DateField()
+#       profile = models.OneToOneField(User, on_delete=models.CASCADE) # Un perfil de usuario tiene un solo usuario
+#   class Genre(models.Model):
+#       name = models.CharField(max_length=100, unique=True)
+#       books = models.ManyToManyField(Book, related_name='genres') # Un libro puede tener muchos géneros y un género puede tener muchos libros 
+# Crear un autor y varios libros relacionados
+author = Author.objects.create(name='Gabriel García Márquez', birth_date='1927-03-06')
+book1 = Book.objects.create(title='Cien años de soledad', published_date='1967-05-30', author=author, pages=417, isbn='1780307474728')
+book2 = Book.objects.create(title='El amor en los tiempos del cólera', published_date='1985-03-05', author=author, pages=348, isbn='1780307389732')
+# Acceder al autor desde un libro (relación directa)
+print(f'Libro: {book1.title}, Autor: {book1.author.name} Birth Date: {book1.author.birth_date}') # Acceder al autor desde un libro (relación directa) usando el campo ForeignKey author
+print(author.id, author.name, author.birth_date, author.books.all()) # Acceder a los libros de un autor (relación inversa) usando el related_name 'books' definido en el modelo Book para el campo ForeignKey author (relación inversa o related_name)
+# Consultar libros de un autor (relación inversa)
+books_by_author = author.books.all() # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
+for book in books_by_author:
+    print(f'Libro: {book.title}, Autor: {book.author.name}')
+finction = Genre.objects.create(name='Ficción')
+fantasy = Genre.objects.create(name='Fantasía')
+drama = Genre.objects.create(name='Drama')
+# Sí existiera un género ya creado se podría usar get_or_create para no crear duplicados:
+# finction, created = Genre.objects.get_or_create(name='Ficción') # Si el género ya existe, no se crea uno nuevo, created será False sí no se creó
+
+orwell = Author.objects.get(name='George Orwell')
+book3 = Book.objects.create(title='1984', published_date='1949-06-08', author=orwell, pages=328, isbn='9780451533335')
+book3.genres.add(finction, drama) # Añadir géneros a un libro (relación muchos a muchos)
+rowling = Author.objects.get(name='J.K. Rowling')
+book4 = Book.objects.create(title='Harry Potter and the Chamber of Secrets', published_date='1998-07-02', author=rowling, pages=251, isbn='97807472228493')
+book4.genres.add(fantasy, drama) # Añadir géneros a un libro (relación muchos a muchos)
+# Consultar géneros de un libro (relación directa)
+book = Book.objects.get(title='1984')
+for genre in book.genres.all(): # Aquí 'genres' es el related_name definido en el modelo Book para el campo ManyToManyField genres
+    print(f'Género: {genre.name}')
+# Consultar libros de un género (relación inversa)
+genre = Genre.objects.get(name='Drama')
+for book in genre.books.all(): # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books
+    print(f'Libro: {book.title}, Género: {genre.name}')
+for book in fiction.books.all(): # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books, en este caso se accede a los libros del género Ficción y se imprime el título del libro y el nombre del género
+    print(f'Libro: {book.title}, Género: {fiction.name}')
+
+book = Book.objects.get(title='1984')
+detail = BookDetail.objects.create(book=book, summary='A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism.', language='English', publisher='Secker & Warburg', cover_url='https://example.com/1984.jpg')
+print(f'Book: {detail.book.title}, Summary: {detail.summary}, Language: {detail.language}, Publisher: {detail.publisher}, Cover URL: {detail.cover_url}') # Acceder al libro desde el detalle del libro (relación directa)
+book_detail = BookDetail.objects.get(book__title='1984') # Aquí 'book' es el nombre del campo OneToOneField en el modelo BookDetail
+print(f'Book: {book_detail.book.title}, Summary: {book_detail.summary}, Language: {book_detail.language}, Publisher: {book_detail.publisher}, Cover URL: {book_detail.cover_url}') # Acceder al libro desde el detalle del libro (relación directa)
+
+# Optimización de consultas con select_related (solo para foreignkeys y OneToOne keys) y prefetch_related
+# Problema N+1: Ocurre cuando se hacen muchas consultas a la base de datos innecesarias al acceder a relaciones entre modelos, por ejemplo, al iterar sobre un conjunto de objetos y acceder a un campo relacionado en cada iteración. Entonces por cada objeto que se recorre, se hace una consulta adicional a la base de datos para obtener el objeto relacionado, lo que puede generar muchas consultas y afectar el rendimiento.
+# Solución: Usar select_related y prefetch_related para reducir el número de consultas a la base de datos.
+# select_related se usa para relaciones ForeignKey y OneToOne, hace un JOIN y trae los datos relacionados en una sola consulta/llamada sin hacer consultas adicionales a la base de datos
 # prefetch_related se usa para relaciones ManyToMany y reverse ForeignKey, hace una consulta adicional y luego une los datos en Python
 # Obtener todos los libros con sus autores usando select_related (evita consultas adicionales a la base de datos)
+# Sin optimizar con select_related:
+books = Book.objects.all() # Aquí se hace 1 consulta a la base de datos
+for book in books:
+    print(f'Libro: {book.title}, Autor: {book.author.name}') # Aquí se hace 1 consulta adicional por cada libro para obtener el autor (N consultas adicionales)
+# SQL generado por el ORM 
+print(books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book"
+# Y por cada libro se haría otra consulta para obtener el autor:
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [1]
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [2]
+    # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author" WHERE "minilibrary_author"."id" = %s  [3]
+    # ...
+
+# Con select_related se hace 1 sola consulta a la base de datos con un JOIN y se traen los datos relacionados de los autores de una sola vez:
 books_with_authors = Book.objects.select_related('author').all() # Aquí 'author' es el nombre del campo ForeignKey en el modelo Book
 for book in books_with_authors:
     print(f'Libro: {book.title}, Autor: {book.author.name}')
-# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos)
+# SQL generado por el ORM
+print(books_with_authors.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_book" INNER JOIN "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") 
+
+
+# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos) y funciona en relaciones inversas y ManyToMany
+# Sin optimizar con prefetch_related:
+genres = Genre.objects.all() # Aquí se hace 1 consulta a la base de datos
+for genre in genres:
+    for book in genre.books.all(): # Aquí se hace 1 consulta adicional por cada género para obtener sus libros (N consultas adicionales)
+        print(f'Género: {genre.name}, Libro: {book.title}')
+# Con prefetch_related se hace 2 consultas a la base de datos, una para los géneros y otra para los libros, y luego une los datos en Python:
+genres_with_books = Genre.objects.prefetch_related('books').all() # Aquí 'books' es el related_name definido en el modelo Genre para el campo ManyToManyField books
+for genre in genres_with_books:
+    print(f'Género: {genre.name}')
+    for book in genre.books.all():
+        print(f' - Libro: {book.title}')
+# SQL generado por el ORM
+print(genres_with_books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_genre"."id", "minilibrary_genre"."name" FROM "minilibrary_genre"
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_genre_books"."genre_id" FROM "minilibrary_book" INNER JOIN "minilibrary_genre_books" ON ("minilibrary_book"."id" = "minilibrary_genre_books"."book_id") WHERE "minilibrary_genre_books"."genre_id" IN (%s, %s)  [1, 2]
+# Y con prefetch_related se haría una consulta para obtener todos los registros relacionados de los libros de una sola vez:
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_genre_books"."genre_id" FROM "minilibrary_book" INNER JOIN "minilibrary_genre_books" ON ("minilibrary_book"."id" = "minilibrary_genre_books"."book_id") WHERE "minilibrary_genre_books"."genre_id" IN (%s, %s, %s)  [1, 2, 3]
+# Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos) y funciona en relaciones inversas y ManyToMany
+authors = Author.objects.all() # Aquí se hace 1 consulta a la base de datos
+for author in authors:
+    for book in author.books.all(): # Aquí se hace 1 consulta adicional por cada autor para obtener sus libros (N consultas adicionales)
+        print(f'Autor: {author.name}, Libro: {book.title}')
+# Con prefetch_related se hace 2 consultas a la base de datos, una para los autores y otra para los libros, y luego une los datos en Python:
 authors_with_books = Author.objects.prefetch_related('books').all() # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author
 for author in authors_with_books:
     print(f'Autor: {author.name}')
     for book in author.books.all():
         print(f' - Libro: {book.title}')    
+# SQL generado por el ORM
+print(authors_with_books.query) # Ver el SQL generado por el ORM
+# SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author"
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" WHERE "minilibrary_book"."author_id" IN (%s, %s, %s)  [1, 2, 3]    
+# Con prefetch_related se haría una sola consulta para obtener todos los registros relacionados de los libros de una sola vez:
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" inner join "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") WHERE "minilibrary_book"."author_id"  
 
 # Consultas con relaciones (JOINs)
 ##  Obtener todos los libros de un autor específico
@@ -982,6 +1089,8 @@ logger.addHandler(logging.StreamHandler())
 # }
 # Ahora al ejecutar cualquier consulta se verá el SQL generado en la consola
 book, created = Book.objects.get_or_create(title='New Book', defaults={'published_date': '2023-01-01', 'author': rowling, 'pages': 100,
+
+
 ```
 
 References: 
