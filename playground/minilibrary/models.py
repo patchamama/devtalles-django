@@ -28,6 +28,10 @@ class Book(models.Model):
     # Aquí perdemos la capacidad de usar recommended_by para acceder a los usuarios que recomendaron un libro, pero ganamos la capacidad de agregar campos adicionales a la relación a través del modelo Recommendation.
     # también perdemos el acceso al método add() y remove() para manejar la relación many-to-many directamente, pero podemos manejar la relación a través del modelo Recommendation.
 
+    class Meta:
+        verbose_name = 'libro'
+        verbose_name_plural = 'libros'
+
     def __str__(self):
         return self.title
 

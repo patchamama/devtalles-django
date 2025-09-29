@@ -9,3 +9,5 @@ db.sqlite3
 /playground/quotes/__pycache__/*.pyc
 /playground/config/__pycache__/
 /playground/config/__pycache__/*.pyc
+/config/__pycache__/
+/config/__pycache__/*.pyc
