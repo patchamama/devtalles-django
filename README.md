@@ -936,9 +936,11 @@ except Exception as e:
 print(Author.objects.filter(name='New Author').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 1').exists()) # Debería ser False
 print(Book.objects.filter(title='New Book 2').exists()) # Debería ser False
+```
 
 # Sección 9: Relaciones entre modelos y optimización de consultas
 
+```py
 # Relación entre modelos (ForeignKey, OneToOneField, ManyToManyField)
 # ForeignKey: Relación uno a muchos (un autor puede tener muchos libros)
 # OneToOneField: Relación uno a uno (un perfil de usuario tiene un solo usuario)
