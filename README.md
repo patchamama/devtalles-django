@@ -1,4 +1,5 @@
 # devtalles-django
+
 devTalles Django. Crea aplicaciones web robustas con Python (notas del curso)
 
 Curso original: https://cursos.devtalles.com/courses/take/django/lessons/64692878-variables
@@ -7,9 +8,7 @@ Curso original: https://cursos.devtalles.com/courses/take/django/lessons/6469287
 
 [Instalaciones recomendadas](https://gist.github.com/ricardocuellar/76c13654d9c46cf7bcc92abe3ecbe8a6)
 
-
 # Sección 2: Fundamentos necesarios de Python
-
 
 ### Funciones de orden superior (High Order Function)
 
@@ -57,7 +56,7 @@ print(admin_dashboard("Admin"))
 print(admin_dashboard("ADMIN"))
 ```
 
-# Sección 3. Introducción a Django 
+# Sección 3. Introducción a Django
 
 En django se usa el modelo MTV y en el mismo donde, en relación al modelo MVC, la vista es el controlador y el template es la vista, más el modelo que es igual. En este modelo el controlador es el encargado de manejar la lógica de la aplicación, interactuar con el modelo y seleccionar la plantilla adecuada para renderizar la respuesta.
 
@@ -84,8 +83,7 @@ django-admin startproject myproject
 
 El archivo `asgi.py` en Django sirve como punto de entrada para aplicaciones ASGI (Asynchronous Server Gateway Interface), por ejemplo: HTTP requests síncronos y asíncronos, WebSocket (chat, push notifications), Conexiones de larga duración y Protocolos en tiempo real.
 
-WSGI `wsgi.py` es el estándar de Python para comunicación entre servidores web y aplicaciones web. Es el protocolo síncrono tradicional que Django ha usado desde sus inicios. Por ejemplo: interfaz de servidores web (conecta django con servidores apache, nginx, gunicorn), manejo de requests HTTP síncronos (tradicionales). 
-
+WSGI `wsgi.py` es el estándar de Python para comunicación entre servidores web y aplicaciones web. Es el protocolo síncrono tradicional que Django ha usado desde sus inicios. Por ejemplo: interfaz de servidores web (conecta django con servidores apache, nginx, gunicorn), manejo de requests HTTP síncronos (tradicionales).
 
 ### Ejecutar django
 
@@ -97,7 +95,7 @@ open http://127.0.0.1:8000/
 
 ### Crear una aplicación
 
-*En el mundo de django las aplicaciones con paquetes o módulos*
+_En el mundo de django las aplicaciones con paquetes o módulos_
 
 ```sh
 python3 manage.py startapp <app-name>
@@ -115,8 +113,10 @@ INSTALLED_APPS = [
 ]
 ```
 
-> [!TIP] 
-> - Muchas veces se recomienda crear una carpeta llamada `apps` en la raíz del proyecto para agrupar y organizar mejor las aplicaciones, por ejemplo: 
+> [!TIP]
+>
+> - Muchas veces se recomienda crear una carpeta llamada `apps` en la raíz del proyecto para agrupar y organizar mejor las aplicaciones, por ejemplo:
+>
 > ```sh
 > myproject/
 >     apps/
@@ -135,9 +135,11 @@ INSTALLED_APPS = [
 >     name = 'apps.myapp' # Antes era 'myapp'
 > ```
 
-> [!TIP] 
+> [!TIP]
+>
 > - Crear de forma global las carpetas `templates` (\includes) y `static` (y sus subcarpetas css, js e images) en la raíz del proyecto para organizar mejor las plantillas y archivos estáticos.
 > - Configurar en `settings.py` las carpetas globales `templates` y `static` para que django las reconozca, por ejemplo:
+>
 > ```py
 >  TEMPLATES = [
 >      {
@@ -153,16 +155,15 @@ INSTALLED_APPS = [
 >  STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 > ```
 
-
 > [!WARNING]
+>
 > - No olvidar reiniciar el servidor después de registrar una nueva aplicación.
 > - En un inicio es recomendable usar SQLite que es la base de datos por defecto en Django, pero en producción se recomienda usar PostgreSQL.
 > - No olvidar instalar el conector de la base de datos que se vaya a usar, por ejemplo, para PostgreSQL: `pip install psycopg2-binary`
 > - No olvidar configurar la base de datos en `settings.py` > `DATABASES` según la base de datos que se vaya a usar.
-> - No olvidar ejecutar las migraciones después de crear una nueva aplicación o modelo: `python manage.py migrate`  
+> - No olvidar ejecutar las migraciones después de crear una nueva aplicación o modelo: `python manage.py migrate`
 > - No olvidar crear un superusuario para acceder al panel de administración: `python manage.py createsuperuser`
 > - No olvidar registrar los modelos en `admin.py` para que aparezcan en el panel de administración.
-
 
 ### Crear una vista
 
@@ -171,12 +172,13 @@ INSTALLED_APPS = [
 from django.http import HttpResponse
 
 def home(request):
-    return HttpResponse("¡Hola, mundo!")            
+    return HttpResponse("¡Hola, mundo!")
 ```
 
 ### Mapear la vista a una URL
 
 > [!TIP]
+>
 > - Es una buena práctica crear un archivo `urls.py` dentro de cada aplicación para manejar las rutas específicas de la aplicación, y luego incluir esas rutas en el archivo `urls.py` del proyecto principal.
 
 ```py
@@ -198,7 +200,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('myapp.urls')),
 ]
-```     
+```
 
 Las views manejan la lógica de la aplicación, interactúan con el modelo y seleccionan la plantilla adecuada para renderizar la respuesta. Las views reciben solicitudes HTTP, procesan los datos necesarios y devuelven respuestas HTTP, estas pueden funcionar usando `funciones` o `clases`.
 
@@ -212,15 +214,15 @@ _Es una buena práctica crear una carpeta llamada `templates` dentro de la aplic
 <!-- myapp/templates/myapp/home.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Welcome to the Home Page</h1>
-</body>
-</html> 
+  </body>
+</html>
 ```
 
 ```py
@@ -228,15 +230,16 @@ _Es una buena práctica crear una carpeta llamada `templates` dentro de la aplic
 from django.shortcuts import render
 
 def home(request):
-    return render(request, 'myapp/home.html')           
+    return render(request, 'myapp/home.html')
 ```
+
 ### Configurar las plantillas en settings.py
 
 ```py
 INSTALLED_APPS = [
     ...
     'myapp',
-]   
+]
 TEMPLATES = [
     {
         ...
@@ -276,7 +279,7 @@ Ref: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/
 - `{{ variable|default:"Valor por defecto" }}`: Muestra un valor por defecto si la variable es None o está vacía.
 - `{{ variable|length }}`: Devuelve la longitud de una lista, cadena u otro iterable.
 - `{{ variable|date:"F j, Y" }}`: Formatea una fecha según el formato especificado.
-- `{{ variable|add:5 }}`: Suma 5 al valor numérico de la variable.  
+- `{{ variable|add:5 }}`: Suma 5 al valor numérico de la variable.
 
 ### Etiquetas comunes (tags)
 
@@ -284,7 +287,7 @@ Ref: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/
 - `{% for item in list %} ... {% endfor %}`: Bucle para iterar sobre una lista.
 - `{% block block_name %} ... {% endblock %}`: Define un bloque de contenido que puede ser sobrescrito en plantillas hijas.
 - `{% extends "base.html" %}`: Indica que la plantilla hereda de otra plantilla (base).
-- `{% include "partial.html" %}`: Incluye otra plantilla dentro de la actual.   
+- `{% include "partial.html" %}`: Incluye otra plantilla dentro de la actual.
 - `{% url 'view_name' %}`: Genera una URL basada en el nombre de la vista.
 - `{% csrf_token %}`: Inserta un token CSRF para proteger formularios contra ataques CSRF.
 - `{% load static %}`: Carga el sistema de archivos estáticos para usar archivos CSS, JS, imágenes, etc.
@@ -305,7 +308,6 @@ Ref: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/
 - `{% blocktrans %} ... {% endblocktrans %}`: Marca un bloque de texto para traducción.<
 - `{% url 'view_name' %}`: Genera una URL basada en el nombre de la vista.
 
-
 Ejemplos:
 
 ```html
@@ -316,17 +318,17 @@ Ejemplos:
 <p>Fecha actual: {{ current_date | date:"F j, Y" }}</p>
 <p>Lista de items:</p>
 <ul>
-    {% for item in items %}
-        <li>{{ item }}</li>
-    {% empty %}
-        <li>No hay items disponibles.</li>
-    {% endfor %}
+  {% for item in items %}
+  <li>{{ item }}</li>
+  {% empty %}
+  <li>No hay items disponibles.</li>
+  {% endfor %}
 </ul>
 <p>Condicional:</p>
 {% if user.is_authenticated %}
-    <p>Bienvenido, {{ user.username }}!</p>
+<p>Bienvenido, {{ user.username }}!</p>
 {% else %}
-    <p>Por favor, inicia sesión.</p>
+<p>Por favor, inicia sesión.</p>
 {% endif %}
 ```
 
@@ -337,7 +339,7 @@ Para esto se usa un template llamado `404.html` en la carpeta `templates/include
 ```py
 DEBUG = False
 ALLOWED_HOSTS = ['*']  # Permitir todos los hosts para desarrollo, en producción especificar los dominios permitidos
-``` 
+```
 
 ### Agregar archivos estáticos
 
@@ -346,19 +348,21 @@ Crear una carpeta llamada `static` en la raíz del proyecto y dentro crear subca
 ```sh
 mkdir -p static/css static/js static/images
 ```
+
 En `settings.py` agregar:
 
 ```py
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 ```
+
 En las plantillas usar:
 
 ```html
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 <script src="{% static 'js/scripts.js' %}"></script>
-<img src="{% static 'images/logo.png' %}" alt="Logo">
+<img src="{% static 'images/logo.png' %}" alt="Logo" />
 ```
 
 Es importante destacar que Django maneja los archivos estáticos de manera diferente en entornos de desarrollo y producción. Inicialmente es importante especificar `{% load static %}` al inicio de cada plantilla que utilice archivos estáticos para cargar el sistema de archivos estáticos de Django y permitir el uso de la etiqueta `{% static %}` para cargar los archivos estáticos específicos deseados.
@@ -376,15 +380,16 @@ Se pueden generar archivos estáticos específicos para cada aplicación creando
                 myapp_scripts.js
             images/
                 myapp_logo.png
-``` 
+```
+
 Y en la plantilla se referencian como:
 
 ```html
 {% load static %}
-<link rel="stylesheet" href="{% static 'myapp/css/myapp_styles.css' %}">
+<link rel="stylesheet" href="{% static 'myapp/css/myapp_styles.css' %}" />
 <script src="{% static 'myapp/js/myapp_scripts.js' %}"></script>
-<img src="{% static 'myapp/images/myapp_logo.png' %}" alt="My App Logo">
-``` 
+<img src="{% static 'myapp/images/myapp_logo.png' %}" alt="My App Logo" />
+```
 
 También se pueden crear a nivel global en la carpeta `static` en la raíz del proyecto, por ejemplo:
 
@@ -396,17 +401,19 @@ También se pueden crear a nivel global en la carpeta `static` en la raíz del p
     images/
         global_logo.png
 ```
+
 Y en la plantilla se referencian como:
 
 ```html
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/global_styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/global_styles.css' %}" />
 <script src="{% static 'js/global_scripts.js' %}"></script>
-<img src="{% static 'images/global_logo.png' %}" alt="Global Logo">
+<img src="{% static 'images/global_logo.png' %}" alt="Global Logo" />
 ```
 
 > [!WARNING]
-> - No olvidar configurar `STATICFILES_DIRS` en `settings.py` para incluir la carpeta global `static` en la raíz del proyecto, si se usan archivos estáticos a nivel global, ejemplo:  `STATICFILES_DIRS = [ BASE_DIR / 'static' ]`
+>
+> - No olvidar configurar `STATICFILES_DIRS` en `settings.py` para incluir la carpeta global `static` en la raíz del proyecto, si se usan archivos estáticos a nivel global, ejemplo: `STATICFILES_DIRS = [ BASE_DIR / 'static' ]`
 >
 > - No olvidar agregar `'django.contrib.staticfiles'` en `INSTALLED_APPS` en `settings.py` para que Django maneje los archivos estáticos correctamente.
 >
@@ -425,6 +432,7 @@ sqlite3 db.sqlite3
 ```
 
 > [!TIP]
+>
 > - Recomiendo usar SQLite en desarrollo por su simplicidad, pero en producción usar PostgreSQL.
 > - Recomiendo usar la aplicación `Table Plus` o `DB Browser for SQLite` para interactuar con la base de datos SQLite de forma visual. [Table Plus](https://tableplus.com/) (de pago, pero tiene versión gratuita con limitaciones) y [DB Browser for SQLite](https://sqlitebrowser.org/) (gratuito y de código abierto).
 > - Si se usa otra base de datos como PostgreSQL o MySQL, se debe usar el cliente correspondiente para interactuar con la base de datos desde el terminal.
@@ -432,7 +440,6 @@ sqlite3 db.sqlite3
 > - En SQLite se puede usar el comando `.help` para ver los comandos disponibles.
 > - En todos los casos, se puede usar el comando `.exit` para salir del cliente de la base de datos.
 > - En SQLite, las tablas creadas por Django tienen el prefijo del nombre de la aplicación, por ejemplo: `myapp_mymodel` para un modelo llamado `MyModel` en una aplicación llamada `myapp`.
-
 
 ### Gestionar base de datos con SQLite desde sql con table Plus
 
@@ -446,7 +453,7 @@ CREATE TABLE author (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
--- En Django sería:  
+-- En Django sería:
 -- class Author(models.Model):
 --     name = models.CharField(max_length=100)
 --     bio = models.TextField()
@@ -462,14 +469,14 @@ CREATE TABLE book (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     -- author_id INTEGER,
-    -- FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE CASCADE 
+    -- FOREIGN KEY (author_id) REFERENCES author(id) ON DELETE CASCADE
     author_id INTEGER REFERENCES author(id) ON DELETE CASCADE
-);  
--- En Django sería: 
+);
+-- En Django sería:
 -- class Book(models.Model):
 --     title = models.CharField(max_length=200)
 --     description = models.TextField()
---     published_date = models.DateField()      
+--     published_date = models.DateField()
 --     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
 --     created_at = models.DateTimeField(auto_now_add=True)
 --     updated_at = models.DateTimeField(auto_now=True)
@@ -489,7 +496,7 @@ UPDATE author SET name='Leonardo Padura' WHERE id=1;
 -- En Django sería: Author.objects.filter(id=1).update(name='Leonardo Padura')
 
 -- Asegurar que se borren los libros del autor al borrar el autor (ON DELETE CASCADE)
-PRAGMA foreign_keys = ON;  
+PRAGMA foreign_keys = ON;
 -- En SQLite las claves foráneas están desactivadas por defecto, se deben activar con PRAGMA
 -- En Django siempre están activadas
 PRAGMA foreign_keys; -- Verificar que esté activado
@@ -505,13 +512,13 @@ DROP TABLE book;
 -- En Django sería: Book.objects.all().delete()
 
 -- Insertar varios registros de una vez
-INSERT INTO author (name, birth_date) VALUES 
+INSERT INTO author (name, birth_date) VALUES
 ('J.K. Rowling', '1965-07-31'),
 ('Gabriel García Márquez', '1985-03-15'),
 ('Haruki Murakami', '1990-12-10'),
 ('Isabel Allende', '1975-05-20'),
-('Chinua Achebe', '1930-11-16'); 
--- En Django sería: 
+('Chinua Achebe', '1930-11-16');
+-- En Django sería:
 -- Author.objects.bulk_create([
 --     Author(name='J.K. Rowling', birth_date='1965-07-31'),
 --     Author(name='Gabriel García Márquez', birth_date='1985-03-15'),
@@ -519,13 +526,13 @@ INSERT INTO author (name, birth_date) VALUES
 --     Author(name='Isabel Allende', birth_date='1975-05-20'),
 --     Author(name='Chinua Achebe', birth_date='1930-11-16'),
 -- ])
-INSERT INTO book (title, description, published_date, author_id) VALUES 
+INSERT INTO book (title, description, published_date, author_id) VALUES
 ('Harry Potter y la piedra filosofal', 'Description de Book 2', '2023-02-01', 2),
 ('Cien años de soledad', 'Description de Book 3', '2023-03-01', 2),
 ('Kafka en la orilla', 'Description de Book 4', '2023-04-01', 3),
 ('La casa de los espíritus', 'Description de Book 5', '2023-05-01', 4),
 ('El hombre en busca de sentido', 'Description de Book 6', '2023-06-01', 5);
--- En Django sería: 
+-- En Django sería:
 -- Book.objects.bulk_create([
 --     Book(title='Harry Potter y la piedra filosofal', description='Description de Book 2', published_date='2023-02-01', author_id=2),
 --     Book(title='Cien años de soledad', description='Description de Book 3', published_date='2023-03-01', author_id=2),
@@ -534,7 +541,7 @@ INSERT INTO book (title, description, published_date, author_id) VALUES
 --     Book(title='El hombre en busca de sentido', description='Description de Book 6', published_date='2023-06-01', author_id=5),
 -- ])
 
--- Consultas avanzadas   
+-- Consultas avanzadas
 SELECT * FROM author;
 -- En Django sería: Author.objects.all()
 SELECT * FROM book;
@@ -571,7 +578,7 @@ SELECT title from book WHERE author_id = (
 SELECT title from book WHERE author_id = (
     SELECT id FROM author WHERE name='Gabriel García Márquez' or name='J.K. Rowling'
 );
--- En Django sería: Book.objects.filter(author__name__in=['Gabriel García Márquez', 'J.K. Rowling']).values_list('title', flat=True)    
+-- En Django sería: Book.objects.filter(author__name__in=['Gabriel García Márquez', 'J.K. Rowling']).values_list('title', flat=True)
 -- Simplificar la consulta anterior con IN
 SELECT title from book WHERE author_id IN (
     SELECT id FROM author WHERE name='Gabriel García Márquez' or name='J.K. Rowling'
@@ -588,7 +595,7 @@ SELECT author.name, book.title
 FROM author
 JOIN book ON author.id = book.author_id
 WHERE author.id = 2;
--- En Django sería: Author.objects.filter(id=2).values('name', 'book__title')   
+-- En Django sería: Author.objects.filter(id=2).values('name', 'book__title')
 
 SELECT * FROM books
 JOIN author ON books.author_id = author.id
@@ -597,17 +604,16 @@ WHERE author.name = 'Gabriel García Márquez';
 ```
 
 ### ORM de Django
- 
-ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que permite interactuar con bases de datos relacionales utilizando clases y objetos en un lenguaje de programación en lugar de escribir consultas SQL directamente. Django incluye un ORM potente y fácil de usar que permite definir modelos como clases de Python, y luego realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) utilizando métodos y atributos de estas clases. Al final un ORM traduce estas operaciones en consultas SQL que se ejecutan en la base de datos subyacente.
 
+ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que permite interactuar con bases de datos relacionales utilizando clases y objetos en un lenguaje de programación en lugar de escribir consultas SQL directamente. Django incluye un ORM potente y fácil de usar que permite definir modelos como clases de Python, y luego realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) utilizando métodos y atributos de estas clases. Al final un ORM traduce estas operaciones en consultas SQL que se ejecutan en la base de datos subyacente.
 
 #### Cómo funciona el ORM de Django
 
 1. **Definición de modelos**: Los modelos se definen como clases de Python que heredan de `django.db.models.Model` y estos representan las tablas de la base de datos. Cada atributo de la clase representa un campo en la tabla de la base de datos y se define utilizando tipos de campo proporcionados por Django (por ejemplo, `CharField`, `TextField`, `DateTimeField`, etc.). Y cada instancia de la clase representa una fila en la tabla. Es decir, como resumen, el ORM hará la traducción entre conceptos de programación orientada a objetos y bases de datos relacionales es la siguiente:
 
-    - Clases u objetos = Tablas
-    - Atributos = Columnas o Campos
-    - Instancias = Filas o Registros
+   - Clases u objetos = Tablas
+   - Atributos = Columnas o Campos
+   - Instancias = Filas o Registros
 
 2. **Migraciones**: Django utiliza un sistema de migraciones para aplicar cambios en los modelos a la base de datos. Cuando se crea o modifica un modelo, se deben crear y aplicar migraciones para reflejar esos cambios en la base de datos.
 
@@ -623,7 +629,7 @@ ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que per
 
 8. **Seguridad**: El ORM de Django ayuda a prevenir ataques de inyección SQL al utilizar consultas parametrizadas y escapar automáticamente los valores de entrada.
 
-9.  **Facilidad de uso**: El ORM de Django está diseñado para ser fácil de usar y comprender, lo que facilita el desarrollo rápido de aplicaciones web.
+9. **Facilidad de uso**: El ORM de Django está diseñado para ser fácil de usar y comprender, lo que facilita el desarrollo rápido de aplicaciones web.
 
 10. **Documentación**: Django cuenta con una documentación extensa y bien mantenida que cubre todos los aspectos del ORM, lo que facilita el aprendizaje y la resolución de problemas.
 
@@ -633,7 +639,7 @@ ORM: Object Relational Mapping (Mapeo Objeto Relacional) es una técnica que per
 
 _Como ventaja de usar ORM sobre SQL directo es que el ORM permite escribir código más limpio y mantenible, ya que las consultas se realizan utilizando la sintaxis de Python con objetos en lugar de SQL plano. Además, el ORM facilita la migración entre diferentes sistemas de bases de datos, ya que abstrae las diferencias entre ellos y soporta múltiples backends de bases de datos, el ORM permite una protección básica contra inyecciones SQL y errores._
 
-*Makemigrations* y *migrate* son comandos de Django que se utilizan para gestionar los cambios en la estructura de la base de datos a lo largo del ciclo de vida de una aplicación web. Estos comandos trabajan en conjunto para crear, aplicar y revertir migraciones, que son archivos que describen los cambios en los modelos de Django y cómo deben reflejarse en la base de datos. *Makemigrations* crea los archivos de migración basados en los cambios realizados en los modelos, mientras que *migrate* aplica esos cambios a la base de datos. 
+_Makemigrations_ y _migrate_ son comandos de Django que se utilizan para gestionar los cambios en la estructura de la base de datos a lo largo del ciclo de vida de una aplicación web. Estos comandos trabajan en conjunto para crear, aplicar y revertir migraciones, que son archivos que describen los cambios en los modelos de Django y cómo deben reflejarse en la base de datos. _Makemigrations_ crea los archivos de migración basados en los cambios realizados en los modelos, mientras que _migrate_ aplica esos cambios a la base de datos.
 
 Para ver sí hay alguna migración pendiente se puede usar el comando `python manage.py showmigrations` que muestra una lista de todas las migraciones disponibles y su estado (aplicadas o pendientes).
 
@@ -708,7 +714,7 @@ for b in books:
 book = Book.objects.get(id=1)
 book = Book.objects.get(id__exact=1) # Otra forma de obtener un objeto por su ID (especificando el operador exact) (select * from book where id = 1 limit 1)
 print(book.title, book.author.name)
-book = Book.objects.get(title='1984') 
+book = Book.objects.get(title='1984')
 print(book.title, book.author.name)
 ## Hacer búsqueda con campo de búsqueda (field lookup):
 ## __exact: Igual a (case-sensitive) y es lo mismo que __exact (WHERE field = value)
@@ -725,7 +731,7 @@ print(book.title, book.author.name)
 ## __isnull: Es nulo o no es nulo (field IS NULL o field IS NOT NULL) field__isnull=True o field__isnull=False
 ## __regex: Coincide con una expresión regular (field REGEXP 'pattern') field__regex='pattern'
 ## __iregex: Coincide con una expresión regular (case-insensitive) (field REGEXP 'pattern') field__iregex='pattern'
-## __date: Convierte el campo en una fecha específica, por ejemplo, un string a fecha (field = 'YYYY-MM-DD') field__date='YYYY-MM-DD', 
+## __date: Convierte el campo en una fecha específica, por ejemplo, un string a fecha (field = 'YYYY-MM-DD') field__date='YYYY-MM-DD',
 ## __year: Coincide con un año específico (field = YYYY) field__year=YYYY
 ## __month: Coincide con un mes específico (field = MM) field__month=MM
 ## __day: Coincide con un día específico (field = DD) field__day=DD
@@ -746,10 +752,10 @@ book = Book.objects.filter(id__in=[1, 2, 3]) # Búsqueda en una lista de valores
 book = Book.objects.filter(id__in=[1, 2, 3, 4], title__icontains='catedral') # Búsqueda en una lista de valores (where id in (1, 2, 3, 4) and title like %catedral%)
 print(book[0].title, book[0].author.name, str(book.query)) # Obtener el primer libro que cumple con el filtro y ver el SQL generado por el ORM
 # Filtrando por fechas y rango de fechas
-books = Book.objects.filter(published_date__year=2023) # Búsqueda por año (WHERE "minilibrary_book"."published_date" BETWEEN 2023-01-01 AND 2023-12-31) 
+books = Book.objects.filter(published_date__year=2023) # Búsqueda por año (WHERE "minilibrary_book"."published_date" BETWEEN 2023-01-01 AND 2023-12-31)
 from datetime import date
-books = Book.objects.filter(published_date=date(2000, 1, 1)) 
-books = Book.objects.filter(published_date__lte=date(2000, 1, 1)) 
+books = Book.objects.filter(published_date=date(2000, 1, 1))
+books = Book.objects.filter(published_date__lte=date(2000, 1, 1))
 books_in_range = Book.objects.filter(published_date__range=['2000-01-01', '2023-12-31']) # Búsqueda en un rango de fechas (where published_date between '2000-01-01' and '2023-12-31')
 for b in books_in_range:
     print(b.title, b.published_date)
@@ -816,7 +822,7 @@ ordered_books_multi = Book.objects.all().order_by('author__name', '-title') # Or
 for b in ordered_books_multi:
     print(b.title, b.author.name, b.published_date)
 print(ordered_books_multi.query) # Obtener el sql generado por el ORM
-# Obtener resultados en modo random 
+# Obtener resultados en modo random
 books = Book.objects.order_by('?')[:5] # Obtener 5 libros al azar (mno usar Book.objects.all().order_by('?') pues no funcionaría correctamente)
 for b in books:
     print(b.title, b.author.name)
@@ -844,16 +850,16 @@ for b in recent_books:
     print(b.title, b.published_date)
 # Select * from book where published_date >= '2000-01-01';
 recent_books_eq = Book.objects.filter(published_date__gte='2000-01-01')
-for b in recent_books_eq:       
+for b in recent_books_eq:
     print(b.title, b.published_date)
 # Select * from book where published_date < '2000-01-01';
-old_books = Book.objects.filter(published_date__lt='2000-01-01')    
+old_books = Book.objects.filter(published_date__lt='2000-01-01')
 for b in old_books:
     print(b.title, b.published_date)
 
 # Actualizar un objeto o registro
 book = Book.objects.get(id=1)
-book.title = 'Harry Potter and the Sorcerer\'s Stone'       
+book.title = 'Harry Potter and the Sorcerer\'s Stone'
 book.save()
 # Actualizar varios objetos a la vez (CUIDADO CON ESTO! puede actualizar muchos registros sin querer)
 Book.objects.filter(author__name='J.K. Rowling').update(pages=250) # Actualizar varios registros a la vez (todos los libros de J.K. Rowling tendrán 250 páginas)
@@ -892,7 +898,7 @@ print(f'Promedio de páginas: {average_pages}')
 # Calcular el número máximo de páginas de un libro
 max_pages = Book.objects.aggregate(maximo_paginas = Max('pages'))['maximo_paginas']
 # SELECT MAX("minilibrary_book"."pages") AS "maximo_paginas" FROM "minilibrary_book"
-print(f'Máximo de páginas: {max_pages}') 
+print(f'Máximo de páginas: {max_pages}')
 # Conocer el sql generado por el ORM
 from django.db import connection
 print(connection.queries) # Ver todas las consultas SQL ejecutadas en la base de datos hasta el momento
@@ -901,7 +907,7 @@ print(connection.queries) # Ver todas las consultas SQL ejecutadas en la base de
 # A diferencia de aggregate, annotate devuelve un QuerySet de objetos con los resultados de la agregación y se pueden encadenar más filtros o métodos después de un annotate y devuelve varios resultados, uno por cada objeto en el QuerySet.
 from django.db.models import Count, Avg
 # Contar cuántos libros tiene cada autor
-authors_with_book_count = Author.objects.annotate(book_count=Count('books')) # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author y de esta forma se cuenta cuántos libros tiene cada autor 
+authors_with_book_count = Author.objects.annotate(book_count=Count('books')) # Aquí 'books' es el related_name definido en el modelo Book para el campo ForeignKey author y de esta forma se cuenta cuántos libros tiene cada autor
 for author in authors_with_book_count:
     print(f'Autor: {author.name}, Número de libros: {author.book_count}')
 # Calcular el promedio de páginas por autor
@@ -947,7 +953,7 @@ print(Book.objects.filter(title='New Book 2').exists()) # Debería ser False
 #       profile = models.OneToOneField(User, on_delete=models.CASCADE) # Un perfil de usuario tiene un solo usuario
 #   class Genre(models.Model):
 #       name = models.CharField(max_length=100, unique=True)
-#       books = models.ManyToManyField(Book, related_name='genres') # Un libro puede tener muchos géneros y un género puede tener muchos libros 
+#       books = models.ManyToManyField(Book, related_name='genres') # Un libro puede tener muchos géneros y un género puede tener muchos libros
 # Crear un autor y varios libros relacionados
 author = Author.objects.create(name='Gabriel García Márquez', birth_date='1927-03-06')
 book1 = Book.objects.create(title='Cien años de soledad', published_date='1967-05-30', author=author, pages=417, isbn='1780307474728')
@@ -998,7 +1004,7 @@ print(f'Book: {book_detail.book.title}, Summary: {book_detail.summary}, Language
 books = Book.objects.all() # Aquí se hace 1 consulta a la base de datos
 for book in books:
     print(f'Libro: {book.title}, Autor: {book.author.name}') # Aquí se hace 1 consulta adicional por cada libro para obtener el autor (N consultas adicionales)
-# SQL generado por el ORM 
+# SQL generado por el ORM
 print(books.query) # Ver el SQL generado por el ORM
 # SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book"
 # Y por cada libro se haría otra consulta para obtener el autor:
@@ -1013,7 +1019,7 @@ for book in books_with_authors:
     print(f'Libro: {book.title}, Autor: {book.author.name}')
 # SQL generado por el ORM
 print(books_with_authors.query) # Ver el SQL generado por el ORM
-# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_book" INNER JOIN "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") 
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn", "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_book" INNER JOIN "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id")
 
 
 # Obtener todos los autores con sus libros usando prefetch_related (evita consultas adicionales a la base de datos) y funciona en relaciones inversas y ManyToMany
@@ -1044,13 +1050,13 @@ authors_with_books = Author.objects.prefetch_related('books').all() # Aquí 'boo
 for author in authors_with_books:
     print(f'Autor: {author.name}')
     for book in author.books.all():
-        print(f' - Libro: {book.title}')    
+        print(f' - Libro: {book.title}')
 # SQL generado por el ORM
 print(authors_with_books.query) # Ver el SQL generado por el ORM
 # SELECT "minilibrary_author"."id", "minilibrary_author"."name", "minilibrary_author"."birth_date" FROM "minilibrary_author"
-# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" WHERE "minilibrary_book"."author_id" IN (%s, %s, %s)  [1, 2, 3]    
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" WHERE "minilibrary_book"."author_id" IN (%s, %s, %s)  [1, 2, 3]
 # Con prefetch_related se haría una sola consulta para obtener todos los registros relacionados de los libros de una sola vez:
-# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" inner join "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") WHERE "minilibrary_book"."author_id"  
+# SELECT "minilibrary_book"."id", "minilibrary_book"."title", "minilibrary_book"."published_date", "minilibrary_book"."author_id", "minilibrary_book"."pages", "minilibrary_book"."isbn" FROM "minilibrary_book" inner join "minilibrary_author" ON ("minilibrary_book"."author_id" = "minilibrary_author"."id") WHERE "minilibrary_book"."author_id"
 
 # Consultas con relaciones (JOINs)
 ##  Obtener todos los libros de un autor específico
@@ -1074,7 +1080,7 @@ logger.addHandler(logging.StreamHandler())
 # Otra forma de ver las consultas SQL generadas por el ORM es configurando el logging en settings.py:
 # LOGGING = {
 #     'version': 1,
-#     'disable_existing_loggers': False,      
+#     'disable_existing_loggers': False,
 #     'handlers': {
 #         'console': {
 #             'class': 'logging.StreamHandler',
@@ -1166,7 +1172,7 @@ for loan in loans:
     print(f'Loan: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')
 returned_loans = Loan.objects.filter(is_returned=False)
 for loan in returned_loans:
-    print(f'Returned Loan: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')   
+    print(f'Returned Loan: {loan.book.title} to {loan.user.username} from {loan.loaned_date} to {loan.returned_date} ({'Returned' if loan.is_returned else 'Not Returned'})')
 
 from django.utils import timezone
 loan = Loan.objects.get(id=1)
@@ -1195,13 +1201,13 @@ print(custom_user.username, custom_user.bio, custom_user.birth_date) # Acceder a
 
 
 # Uso de through en ManyToManyField para agregar campos adicionales a la relación en una tabla intermedia
-# myapp/models.py 
+# myapp/models.py
 from django.contrib.auth import get_user_model
 User = get_user_model()
 user = User.objects.first() # Obtener el primer usuario
 book = Book.objects.first() # Obtener el primer libro
 Recomendation.objects.create(user=user, book=book, note='Great book for learning Django!') # Crear una recomendación con campos adicionales en la tabla intermedia
-# Sí no lo hicieramos así, no podríamos agregar la nota a la recomendación, que es un campo intermedio en la relación ManyToMany entre User y Book que hemos creado con el modelo Recomendation y el parámetro through en el campo ManyToManyField  
+# Sí no lo hicieramos así, no podríamos agregar la nota a la recomendación, que es un campo intermedio en la relación ManyToMany entre User y Book que hemos creado con el modelo Recomendation y el parámetro through en el campo ManyToManyField
 
 # Seeds o datos iniciales
 # Importar datos iniciales desde un archivo python seeds/seeds.py
@@ -1212,8 +1218,8 @@ Recomendation.objects.create(user=user, book=book, note='Great book for learning
 # python3 manage.py dumpdata minilibrary > seeds/initial_data.json
 
 
-# Consultas avanzadas 
-from django.db.models import Count, Avg 
+# Consultas avanzadas
+from django.db.models import Count, Avg
 # Contar sí alguno de los libros tiene alguna reseña y un promedio de calificaciones > 1.5
 books_with_reviews = Book.objects.annotate(num_reviews=Count('reviews'), avg_rating=Avg('reviews__rating')).filter(num_reviews__gt=1, avg_rating__gt=1.5)
 for book in books_with_reviews:
@@ -1241,7 +1247,7 @@ for user in users_with_many_loans:
 # SQL generado por el ORM
 print(users_with_many_loans.query) # Ver el SQL generado por el ORM
 
-# Buscar reviews con contraseñas igual a excelente 
+# Buscar reviews con contraseñas igual a excelente
 excellent_reviews = Review.objects.filter(text__icontains='excelente') # Buscar reviews que contengan la palabra 'excelente' (case insensitive)
 for review in excellent_reviews:
     print(f'Review for {review.book.title} by {review.user.username}: {review.rating}/5 - {review.text}')
@@ -1249,7 +1255,21 @@ for review in excellent_reviews:
 print(excellent_reviews.query) # Ver el SQL generado por el ORM
 ```
 
-References: 
+### Comandos útiles
+
+```sh
+# Ver el estado de las migraciones
+python manage.py showmigrations
+# Ver las consultas SQL generadas por las migraciones
+python manage.py sqlmigrate myapp 0001_initial
+# Borrar todas las migraciones y la base de datos (usar con precaución)
+rm -rf myapp/migrations
+rm db.sqlite3
+python manage.py makemigrations
+python manage.py migrate
+```
+
+References:
 
 - Django ORM documentation: https://docs.djangoproject.com/en/5.2/topics/db/models/
 - Django Fields documentation: https://docs.djangoproject.com/en/5.2/ref/models/fields/
@@ -1266,101 +1286,334 @@ References:
 - Django Performance optimization documentation: https://docs.djangoproject.com/en/5.2/topics/performance/
 - Django Testing with ORM documentation: https://docs.djangoproject.com/en/5.2/topics/testing/tools/#testing-with-the-orm
 
+# Sección 10: Administración de Django (Django Admin)
 
-### Registrar el modelo en el admin
-
-```py
-# myapp/admin.py
-from django.contrib import admin
-from .models import MyModel
-
-admin.site.register(MyModel)
-```
 ### Crear un superusuario
 
 ```sh
 python manage.py createsuperuser
-``` 
+```
 
 ### Acceder al panel de administración
 
 ```sh
 python manage.py runserver
 ```
-Abrir en el navegador: http://127.0.0.1:8000/admin/ 
-### Consultas básicas con el ORM
+
+Abrir en el navegador: http://127.0.0.1:8000/admin/
+
+### Registrar el modelo en el admin
 
 ```py
-from myapp.models import MyModel    
-# Crear un nuevo objeto
-obj = MyModel(field1='value1', field2='value2')
-obj.save()
-# Consultar todos los objetos
-objs = MyModel.objects.all()
-for o in objs:
-    print(o.field1, o.field2)
-# Filtrar objetos
-filtered_objs = MyModel.objects.filter(field1='value1')
-for o in filtered_objs:
-    print(o.field1, o.field2)
-# Obtener un objeto por su ID
-obj = MyModel.objects.get(id=1)
-print(obj.field1, obj.field2)
-# Actualizar un objeto
-obj = MyModel.objects.get(id=1)
-obj.field1 = 'new_value'
-obj.save()
-# Eliminar un objeto
-obj = MyModel.objects.get(id=1)
-obj.delete()
-``` 
+# myapp/admin.py
+from django.contrib import admin
+from .models import Author, Genre, Book, BookDetail, Review, Loan, Recommendation
 
-### Relaciones entre modelos
+# Register your models here.
 
-```py
-class Author(models.Model):
-    name = models.CharField(max_length=100)     
-    def __str__(self):
-        return self.name
-class Book(models.Model):
-    title = models.CharField(max_length=200)        
+@admin.register(Book)  # decorador que hace lo mismo que admin.site.register(Book, BookAdmin)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'pages', 'publication_date') # Campos a mostrar en la lista de libros
+    search_fields = ('title', 'author__name') # Campos por los que se puede buscar
+    list_filter = ('genres', 'publication_date', 'author') # Filtros para la barra lateral
+    ordering = ('-publication_date',) # Ordenar por fecha de publicación descendente
+    date_hierarchy = 'publication_date'  # Agrega una jerarquía de fechas para facilitar la navegación por años/meses/días
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
-    published_date = models.DateField()
-    def __str__(self):
-        return self.title
-```     
-
-### Consultas con relaciones
-
-```py
-# Obtener todos los libros de un autor
-author = Author.objects.get(id=1)
-books = author.books.all()
-for book in books:
-    print(book.title)
-# Obtener el autor de un libro
-book = Book.objects.get(id=1)
-print(book.author.name)
-``` 
-
-### Eliminar un modelo
-
-```sh
-python manage.py makemigrations
-python manage.py migrate
+admin.site.register(Author)
+admin.site.register(Genre)
+# admin.site.register(Book, BookAdmin)
+admin.site.register(BookDetail)
+admin.site.register(Review)
+admin.site.register(Loan)
+admin.site.register(Recommendation)
 ```
-### Comandos útiles 
 
-```sh
-# Ver el estado de las migraciones
-python manage.py showmigrations
-# Ver las consultas SQL generadas por las migraciones
-python manage.py sqlmigrate myapp 0001_initial
-# Borrar todas las migraciones y la base de datos (usar con precaución)
-rm -rf myapp/migrations
-rm db.sqlite3
-python manage.py makemigrations
-python manage.py migrate
-``` 
+> [!NOTE]
+>
+> - Asegúrate de que los modelos estén correctamente definidos antes de registrarlos en el admin.
+> - Realiza las migraciones necesarias si has creado nuevos modelos.
+> - Puedes personalizar la administración creando clases que hereden de `admin.ModelAdmin`.
+> - Consulta la documentación oficial de Django para más detalles sobre la personalización del admin: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/
+> - Recuerda que el panel de administración es una herramienta poderosa para gestionar los datos de tu aplicación, pero debe ser protegido adecuadamente en entornos de producción.
 
+> [!NOTE]
+> En la personalización del admin, puedes usar `list_display`, `search_fields`, `list_filter`, y `ordering` para mejorar la usabilidad del panel de administración.
+> Consulta la documentación oficial de Django para más detalles sobre la personalización del admin: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/
+>
+> - `list_display`: Define los campos que se mostrarán en la lista de objetos.
+> - `search_fields`: Permite buscar objetos por los campos especificados.
+> - `list_filter`: Agrega filtros en la barra lateral para filtrar los objetos por los campos especificados.
+> - `ordering`: Define el orden predeterminado de los objetos en la lista.
+> - `date_hierarchy`: Agrega una jerarquía de fechas para facilitar la navegación por años/meses/días.
+
+> [!NOTE]
+> Sí deseas personalizar aún más el admin y cambiar la apariencia, por ejemplo, que se muestre "libro" en lugar de "book", puedes usar el atributo `verbose_name` en el modelo:
+>
+> ```py
+> class Book(models.Model):
+>     ...
+>     class Meta:
+>         verbose_name = 'libro'
+>         verbose_name_plural = 'libros'
+> ```
+>
+> Esto cambiará cómo se muestra el nombre del modelo en el admin y en otros lugares de Django.
+
+### Inline relations en el admin o relaciones en línea
+
+Nota: Los `inlines` permiten editar modelos relacionados (foreign key o OneToOneField) en la misma página que el modelo principal admin, lo que facilita la gestión de datos relacionados.
+
+Por ejemplo, para mostrar los detalles del libro (BookDetail) en la página de administración del libro (Book), normalmente habría que editar el libro y luego hacer clic en un enlace para editar los detalles del libro. Con los inlines, puedes editar ambos modelos en la misma página.
+
+Existen para ello dos clases principales que puedes usar:
+
+- `admin.StackedInline`: Muestra los campos del modelo relacionado en un formato apilado (uno debajo del otro).
+- `admin.TabularInline`: Muestra los campos del modelo relacionado en un formato tabular (en una tabla).
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import Author, Genre, Book, BookDetail, Review, Loan, Recommendation
+
+# Register your models here.
+
+class ReviewInline(admin.TabularInline):
+    model = Review
+    extra = 1  # Número de formularios adicionales para agregar nuevas reseñas
+    # fields = ('user', 'rating', 'comment') # Campos a mostrar en el inline
+    # readonly_fields = ('created_at',)  # Hacer que el campo created_at sea de solo lectura
+    # show_change_link = True  # Muestra un enlace para editar la reseña completa
+
+class BookDetailInline(admin.StackedInline):
+    model = BookDetail
+    can_delete = False # Evita que se pueda eliminar el detalle del libro desde el inline
+    verbose_name_plural = 'Detalles del libro' # Nombre plural en la interfaz
+    # fk_name = 'book' # Especifica el campo ForeignKey si hay múltiples relaciones al mismo modelo
+
+@admin.register(Book)  # decorador que hace lo mismo que admin.site.register(Book, BookAdmin)
+class BookAdmin(admin.ModelAdmin):
+    inlines = [ReviewInline, BookDetailInline] # Agregar los inlines al admin del libro
+    list_display = ('title', 'author', 'pages', 'publication_date') # Campos a mostrar en la lista de libros
+    search_fields = ('title', 'author__name') # Campos por los que se puede buscar
+    list_filter = ('genres', 'publication_date', 'author') # Filtros para la barra lateral
+    ordering = ('-publication_date',) # Ordenar por fecha de publicación descendente
+    date_hierarchy = 'publication_date'  # Agrega una jerarquía de fechas para facilitar la navegación por años/meses/d
+```
+
+> [!NOTE]
+>
+> - Asegúrate de que los modelos relacionados estén correctamente definidos antes de usar inlines en el admin.
+> - Puedes personalizar los inlines usando atributos como `extra`, `fields`, `readonly_fields`, y `show_change_link`.
+> - Consulta la documentación oficial de Django para más detalles sobre los inlines en el admin: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/#inlinemodeladmin-objects
+> - Recuerda que los inlines son útiles para mejorar la usabilidad del panel de administración, pero deben ser usados con moderación para evitar páginas demasiado largas o complejas.
+> - Sí tienes múltiples relaciones al mismo modelo, puedes usar el atributo `fk_name` en la clase inline para especificar cuál campo ForeignKey usar.
+> - Sí deseas evitar que se pueda eliminar el modelo relacionado desde el inline, puedes usar el atributo `can_delete = False`.
+> - Sí deseas cambiar el nombre plural que se muestra en la interfaz del admin para el inline, puedes usar el atributo `verbose_name_plural`.
+> - Sí deseas limitar el número de formularios adicionales para agregar nuevos objetos relacionados, puedes usar el atributo `extra`.
+> - Sí deseas mostrar un enlace para editar el objeto relacionado completo, puedes usar el atributo `show_change_link = True`.
+> - Sí deseas hacer que algunos campos sean de solo lectura en el inline, puedes usar el atributo `readonly_fields`.
+> - Sí deseas personalizar los campos que se muestran en el inline, puedes usar el atributo `fields`.
+> - Sí deseas usar un formato tabular en lugar de apilado para el inline, puedes usar `admin.TabularInline` en lugar de `admin.StackedInline`.
+> - Sí deseas usar un formato apilado en lugar de tabular para el inline, puedes usar `admin.StackedInline` en lugar de `admin.TabularInline`.
+> - Recuerda que los inlines solo funcionan para relaciones ForeignKey y OneToOneField, no para ManyToManyField.
+> - Sí deseas agregar inlines para modelos relacionados con ManyToManyField, puedes crear un modelo intermedio con campos adicionales y usar ese modelo como inline.
+> - Consulta la documentación oficial de Django para más detalles sobre la personalización del admin: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/
+
+> [!NOTE]
+> En el caso de desear registrar un modelo `inline` relacionado con el modelo `User` de Django, es recomendable usar el método `get_user_model()` para obtener el modelo de usuario actual, ya que esto permite compatibilidad con modelos de usuario personalizados, también hay que crear un CustomUserAdmin y desregistrar el modelo User predeterminado (para que no de error). Aquí tienes un ejemplo de cómo hacerlo:
+>
+> ```py
+> # myapp/admin.py
+> from django.contrib import admin
+> from django.contrib.auth import get_user_model
+> from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+> from .models import UserProfile
+>
+> User = get_user_model()
+>
+> class UserProfileInline(admin.StackedInline):
+>     model = UserProfile
+>     can_delete = False
+>     verbose_name_plural = 'Perfiles de usuario'
+>
+> class CustomUserAdmin(BaseUserAdmin):
+>     inlines = (UserProfileInline,)
+>     list_display = ('username', 'email')
+>
+> try:
+>     admin.site.unregister(User) # Desregistrar el modelo User predeterminado
+> except admin.sites.NotRegistered:
+>     pass
+> admin.site.register(User, CustomUserAdmin) # Registrar el modelo User con el CustomUserAdmin
+>
+> # Registrar otros modelos si es necesario
+> admin.site.register(UserProfile)
+> admin.site.register(User, CustomUserAdmin) # Registrar el modelo User con el CustomUserAdmin
+> ```
+>
+> De esta forma se pueden editar los perfiles de usuario directamente desde la página de administración del usuario, mejorando la usabilidad y facilitando la gestión de datos relacionados.
+> Consulta la documentación oficial de Django para más detalles sobre la personalización del admin: https://docs.djangoproject.com/en/5.2/ref/contrib/admin/
+
+> [!NOTE]
+> Sí deseas personalizar aún más el admin y cambiar la apariencia, por ejemplo, que se muestre "usuario" en lugar de "user", puedes usar el atributo `verbose_name` en el modelo:
+>
+> ```py
+> from django.contrib.auth.models import AbstractUser
+> from django.db import models
+>
+> class CustomUser(AbstractUser):
+>     class Meta:
+>         verbose_name = "usuario"
+>         verbose_name_plural = "usuarios"
+> ```
+>
+> Esto cambiará cómo se muestra el nombre del modelo en el admin y en otros lugares de Django.
+> Sí deseas agrupar los campos en secciones en la página de administración del usuario, puedes usar el atributo `fieldsets` en la clase `CustomUserAdmin`:
+>
+> ```py
+> class CustomUserAdmin(BaseUserAdmin):
+>     inlines = (UserProfileInline,)
+>     list_display = ('username', 'email')
+>     fieldsets = (
+>         (None, {'fields': ('username', 'password')}),
+>         ('Información personal', {'fields': ('first_name', 'last_name', 'email')}),
+>         ('Permisos', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+>         ('Fechas importantes', {'fields': ('last_login', 'date_joined')}),
+>     )
+> ```
+
+### Actions en el admin (crear accionables personalizados)
+
+Las actions permiten realizar operaciones en lote sobre los objetos seleccionados en la lista del admin. Por ejemplo, puedes crear una acción para marcar varios préstamos como devueltos. Para esto se usa el decorador `@admin.action` que le dice a Django que este método es una acción que se puede aplicar a los objetos seleccionados en la lista del admin.
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import Loan
+
+@admin.action(description='Marcar préstamos como devueltos') # Descripción que se mostrará en el menú de acciones
+def mark_as_returned(modeladmin, request, queryset):
+    queryset.update(is_returned=True) # Actualiza el campo is_returned a True para todos los préstamos seleccionados
+
+class LoanAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'libro', 'fecha_prestamo', 'estado')
+    actions = [mark_as_returned] # Registrar la acción en el admin del préstamo para que aparezca en el menú de acciones al editar préstamos (Loan)
+
+admin.site.register(Loan, LoanAdmin)
+```
+
+De esta forma se puede seleccionar varios préstamos en la lista del admin y aplicar la acción "Marcar préstamos como devueltos" para actualizar el campo `is_returned` a `True` para todos los préstamos seleccionados.
+
+### Autocompletar en el admin (autocomplete_fields)
+
+El atributo `autocomplete_fields` en el admin de Django permite mejorar la usabilidad al seleccionar objetos relacionados en campos ForeignKey y ManyToManyField, especialmente cuando hay muchos registros en la tabla relacionada. En lugar de mostrar un menú desplegable con todos los registros, se muestra un campo de búsqueda que permite filtrar los resultados a medida que se escribe.
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import Book, Author, Genre
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    search_fields = ('title', 'author__name') # Campos por los que se puede buscar
+    autocomplete_fields = ['author', 'genres'] # Habilitar autocompletar para los campos ForeignKey y ManyToManyField
+    # author es un ForeignKey y genres es un ManyToManyField, ambos deben de estar definidos en sus modelos como search_fields para que funcione el autocompletar
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    search_fields = ('name',) # Campos por los que se puede buscar
+    autocomplete_fields = ['books']
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    search_fields = ('name',) # Campos por los que se puede buscar
+    autocomplete_fields = ['books']
+```
+
+### Raw id fields en el admin (raw_id_fields)
+
+El atributo `raw_id_fields` en el admin de Django permite mejorar la usabilidad al seleccionar objetos relacionados en campos ForeignKey y ManyToManyField, especialmente cuando hay muchos registros en la tabla relacionada. En lugar de mostrar un menú desplegable con todos los registros, se muestra un campo de texto donde se puede ingresar el ID del objeto relacionado directamente.
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import Book, Author, Genre
+
+@admin.register(Loan)
+class LoanAdmin(admin.ModelAdmin):
+    search_fields = ('user__username', 'book__title') # Campos por los que se puede buscar
+    raw_id_fields = ['user', 'book'] # Habilitar raw id fields para los campos ForeignKey
+    # user es un ForeignKey y book es un ForeignKey, ambos deben de estar definidos en sus modelos como search_fields para que funcione el raw id fields
+
+...
+
+admin.site.register(Book, BookAdmin)
+admin.site.register(Author, AuthorAdmin)
+admin.site.register(Genre, GenreAdmin)
+```
+
+### Seguridad, accesos y grupos en el admin
+
+El panel de administración de Django es una herramienta poderosa para gestionar los datos de tu aplicación, pero también es crucial asegurarse de que solo los usuarios autorizados tengan acceso a él. Aquí te explico cómo manejar la seguridad, accesos y grupos en el admin de Django:
+
+1. **Permisos de usuario**: Django permite definir permisos a nivel de modelo. Puedes especificar qué acciones puede realizar cada usuario (crear, editar, eliminar) sobre cada modelo. Esto se puede hacer mediante el uso de la clase `Meta` en tus modelos.
+
+2. **Grupos de usuarios**: Puedes crear grupos de usuarios en Django y asignar permisos a esos grupos. Luego, puedes agregar usuarios a los grupos según sea necesario. Esto facilita la gestión de permisos para múltiples usuarios.
+
+3. **Personalización del admin**: Puedes personalizar la interfaz del admin para mostrar u ocultar ciertos elementos según los permisos del usuario. Por ejemplo, puedes ocultar ciertos modelos o acciones si el usuario no tiene los permisos adecuados.
+
+4. **Autenticación y autorización**: Asegúrate de que tu aplicación tenga un sistema de autenticación robusto. Django proporciona un sistema de autenticación integrado que puedes utilizar para gestionar usuarios y permisos.
+
+5. **Auditoría y registro**: Considera implementar un sistema de auditoría para registrar quién accede a qué datos y cuándo. Esto puede ser útil para detectar accesos no autorizados o actividades sospechosas.
+6. **Uso de HTTPS**: Asegúrate de que tu sitio web utilice HTTPS para proteger la comunicación entre el cliente y el servidor, especialmente cuando se manejan datos sensibles.
+
+### Asignar permisos desde código
+
+Las funciones `has_add_permission`, `has_change_permission`, `has_delete_permission` y `has_view_permission` en una clase que hereda de `admin.ModelAdmin` permiten personalizar los permisos de acceso a las acciones de agregar, cambiar, eliminar y ver objetos en el panel de administración de Django. Estas funciones se pueden sobrescribir para implementar lógica personalizada basada en las necesidades específicas de tu aplicación.
+Aquí tienes un ejemplo de cómo usar estas funciones para asignar permisos desde código:
+
+```py
+# myapp/admin.py
+from django.contrib import admin
+from .models import Book
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.is_staff
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_authenticated
+# Aquí se define que solo los superusuarios pueden agregar y eliminar libros, los usuarios staff pueden cambiar libros, y cualquier usuario autenticado puede ver libros.
+```
+
+### Personalizar el idioma del admin
+
+Para personalizar el idioma del admin de Django, debes seguir estos pasos:
+
+1. **Configurar el idioma en settings.py**: Asegúrate de que la configuración `LANGUAGE_CODE` en tu archivo `settings.py` esté establecida al idioma que deseas usar. Por ejemplo, para español:
+
+   ```py
+   LANGUAGE_CODE = 'es'
+   ```
+
+2. Cambiar el header del admin (opcional):
+
+   ```py
+   # myapp/admin.py
+   from django.contrib import admin
+   from django.utils.translation import gettext_lazy as _
+
+    admin.site.site_header = "Mi Biblioteca Admin"  # Cambia el header del admin
+    admin.site.site_title = "Mi Biblioteca"  # Cambia el título del admin
+    admin.site.index_title = "Panel de Administración"  # Cambia el título de la página principal del admin
+   ```
+
+> [!TIP]
+> Para más información sobre la internacionalización en Django, puedes consultar la documentación oficial: https://docs.djangoproject.com/en/5.2/topics/i18n/
