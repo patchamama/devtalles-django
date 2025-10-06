@@ -1619,3 +1619,60 @@ Para personalizar el idioma del admin de Django, debes seguir estos pasos:
 
 > [!TIP]
 > Para más información sobre la internacionalización en Django, puedes consultar la documentación oficial: https://docs.djangoproject.com/en/5.2/topics/i18n/
+
+# Sección 11: Filtros, búsquedas y paginación en listas
+
+### Paginación manual con Paginator
+
+En la vistas, puedes usar la clase `Paginator` de Django para dividir una lista grande de objetos en páginas más pequeñas. Aquí tienes un ejemplo de cómo hacerlo:
+
+```py
+from django.core.paginator import Paginator # Importar la clase Paginator
+from myapp.models import Book
+
+def book_list(request):
+    book_list = Book.objects.all()
+    query = request.GET.get('query_search', None)  # Obtener el parámetro de búsqueda 'query_search' de la URL si está presente
+    if query:
+        book_list = book_list.filter(
+            Q(title__icontains=query) | Q(author__name__icontains=query)
+        )  # Filtrar libros por título que contenga la cadena de búsqueda (case-insensitive)
+    paginator = Paginator(book_list, 10)  # Mostrar 10 libros por página
+    page_number = request.GET.get('page') # Obtener el número de página de los parámetros GET de la solicitud
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'myapp/book_list.html', {'page_obj': page_obj})
+```
+
+En la plantilla, puedes usar el objeto `page_obj` para mostrar los libros y los controles de paginación:
+
+```html
+<form method="get" action="">
+  <input
+    type="text"
+    name="query_search"
+    placeholder="Search books for title or author..."
+    value="{{ request.GET.query_search }}"
+  />
+  <button type="submit">Search</button>
+</form>
+{% for book in page_obj %}
+<p>{{ book.title }} by {{ book.author.name }}</p>
+{% endfor %}
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; first</a>
+    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+```
