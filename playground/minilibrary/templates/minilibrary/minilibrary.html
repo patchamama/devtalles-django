@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minilibrary</title>
+  </head>
+  <body>
+    <h1>Welcome to the Minilibrary</h1>
+    <p>This is a placeholder for the Minilibrary application.</p>
+    <form method="get" action="">
+      <input
+        type="text"
+        name="query_search"
+        placeholder="Search books for title or author..."
+        value="{{ request.GET.query_search }}"
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    <ul>
+      {% for book in books %}
+      <li>{{ book.title }} by {{ book.author.name }}</li>
+      {% empty %}
+      <li>No books found.</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('messages/', include('quotes.urls'), name='days_quote'),  # http://127.0.0.1:8000/messages/
     path('landings/', include('landing.urls')),  # http://127.0.0.1:8000/landings/
+    path('minilibrary/', include('minilibrary.urls')),  # http://127.0.0.1:8000/minilibrary/
 ]
