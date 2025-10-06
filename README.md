@@ -1676,3 +1676,48 @@ En la plantilla, puedes usar el objeto `page_obj` para mostrar los libros y los 
   </span>
 </div>
 ```
+
+_Para conservar los parámetros de búsqueda en la paginación en la vista se puede eliminar el filtro que se aplica en la plantilla de paginación y se pueden mantener los parámetros de búsqueda en la URL agregándolos a los enlaces de paginación:_
+
+```py
+query_params = request.GET.copy()  # Copiar los parámetros GET de la solicitud en un diccionario mutable
+if 'page' in query_params:
+    del query_params['page']  # Eliminar el parámetro 'page' para mantener otros parámetros en la paginación
+    # query_params.pop("page", None)  # Eliminar el parámetro 'page' para mantener otros parámetros en la paginación
+query_string = query_params.urlencode()  # Codificar los parámetros restantes en una cadena de consulta
+return render(request, 'myapp/book_list.html', {'page_obj': page_obj, 'query_string': query_string})
+```
+
+Y en la plantilla:
+
+```html
+...
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="?page=1{% if query_string %}&{{ query_string }}{% endif %}"
+      >&laquo; first</a
+    >
+    <a
+      href="?page={{ page_obj.previous_page_number }}{% if query_string %}&{{ query_string }}{% endif %}"
+      >previous</a
+    >
+    {% endif %}
+
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+    <a
+      href="?page={{ page_obj.next_page_number }}{% if query_string %}&{{ query_string }}{% endif %}"
+      >next</a
+    >
+    <a
+      href="?page={{ page_obj.paginator.num_pages }}{% if query_string %}&{{ query_string }}{% endif %}"
+      >last &raquo;</a
+    >
+    {% endif %}
+  </span>
+</div>
+```
