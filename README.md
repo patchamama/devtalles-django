@@ -161,8 +161,8 @@ INSTALLED_APPS = [
 > - En un inicio es recomendable usar SQLite que es la base de datos por defecto en Django, pero en producción se recomienda usar PostgreSQL.
 > - No olvidar instalar el conector de la base de datos que se vaya a usar, por ejemplo, para PostgreSQL: `pip install psycopg2-binary`
 > - No olvidar configurar la base de datos en `settings.py` > `DATABASES` según la base de datos que se vaya a usar.
-> - No olvidar ejecutar las migraciones después de crear una nueva aplicación o modelo: `python manage.py migrate`
-> - No olvidar crear un superusuario para acceder al panel de administración: `python manage.py createsuperuser`
+> - No olvidar ejecutar las migraciones después de crear una nueva aplicación o modelo: `python3 manage.py migrate`
+> - No olvidar crear un superusuario para acceder al panel de administración: `python3 manage.py createsuperuser`
 > - No olvidar registrar los modelos en `admin.py` para que aparezcan en el panel de administración.
 
 ### Crear una vista
@@ -367,7 +367,7 @@ En las plantillas usar:
 
 Es importante destacar que Django maneja los archivos estáticos de manera diferente en entornos de desarrollo y producción. Inicialmente es importante especificar `{% load static %}` al inicio de cada plantilla que utilice archivos estáticos para cargar el sistema de archivos estáticos de Django y permitir el uso de la etiqueta `{% static %}` para cargar los archivos estáticos específicos deseados.
 
-Asegurarse que en `settings.py` esté `DEBUG = True` en desarrollo para servir archivos estáticos automáticamente. En producción se debe configurar el servidor web (nginx, apache) para servir estos archivos, y usar `python manage.py collectstatic` para recopilar todos los archivos estáticos en un solo directorio. Adicionalmente la sección "INSTALLED_APPS" debe incluir `'django.contrib.staticfiles'`. En producción, `STATIC_URL` y `STATIC_ROOT` deben estar correctamente configurados para servir los archivos estáticos desde el servidor web.
+Asegurarse que en `settings.py` esté `DEBUG = True` en desarrollo para servir archivos estáticos automáticamente. En producción se debe configurar el servidor web (nginx, apache) para servir estos archivos, y usar `python3 manage.py collectstatic` para recopilar todos los archivos estáticos en un solo directorio. Adicionalmente la sección "INSTALLED_APPS" debe incluir `'django.contrib.staticfiles'`. En producción, `STATIC_URL` y `STATIC_ROOT` deben estar correctamente configurados para servir los archivos estáticos desde el servidor web.
 
 Se pueden generar archivos estáticos específicos para cada aplicación creando una carpeta `static` dentro de la aplicación, por ejemplo:
 
@@ -417,11 +417,11 @@ Y en la plantilla se referencian como:
 >
 > - No olvidar agregar `'django.contrib.staticfiles'` en `INSTALLED_APPS` en `settings.py` para que Django maneje los archivos estáticos correctamente.
 >
-> - No olvidar ejecutar `python manage.py collectstatic` en producción para recopilar todos los archivos estáticos en el directorio especificado por `STATIC_ROOT`.
+> - No olvidar ejecutar `python3 manage.py collectstatic` en producción para recopilar todos los archivos estáticos en el directorio especificado por `STATIC_ROOT`.
 >
 > - No se deben crear carpetas `static` dentro de la carpeta `templates`, ya que esto puede causar conflictos y problemas al servir los archivos estáticos. Las carpetas `static` deben estar separadas de las plantillas para mantener una estructura clara y evitar confusiones.
 >
-> - No olvidar ejecutar el servidor con `python manage.py runserver` para que los cambios en las plantillas y archivos estáticos se reflejen correctamente.
+> - No olvidar ejecutar el servidor con `python3 manage.py runserver` para que los cambios en las plantillas y archivos estáticos se reflejen correctamente.
 
 # Sección 7. Modelos y bases de datos
 
@@ -641,7 +641,7 @@ _Como ventaja de usar ORM sobre SQL directo es que el ORM permite escribir códi
 
 _Makemigrations_ y _migrate_ son comandos de Django que se utilizan para gestionar los cambios en la estructura de la base de datos a lo largo del ciclo de vida de una aplicación web. Estos comandos trabajan en conjunto para crear, aplicar y revertir migraciones, que son archivos que describen los cambios en los modelos de Django y cómo deben reflejarse en la base de datos. _Makemigrations_ crea los archivos de migración basados en los cambios realizados en los modelos, mientras que _migrate_ aplica esos cambios a la base de datos.
 
-Para ver sí hay alguna migración pendiente se puede usar el comando `python manage.py showmigrations` que muestra una lista de todas las migraciones disponibles y su estado (aplicadas o pendientes).
+Para ver sí hay alguna migración pendiente se puede usar el comando `python3 manage.py showmigrations` que muestra una lista de todas las migraciones disponibles y su estado (aplicadas o pendientes).
 
 Una vez que se han creado las migraciones con `makemigrations`, se pueden aplicar a la base de datos utilizando el comando `migrate`. Este comando ejecuta las migraciones pendientes en el orden correcto, asegurando que la estructura de la base de datos esté sincronizada con los modelos de Django, así que es importante ejecutar `migrate` después de `makemigrations` para que los cambios en los modelos se reflejen en la base de datos cuando se realizan cambios en los modelos.
 
@@ -1149,8 +1149,8 @@ print(profile.user.username, profile.bio, profile.birth_date) # Acceder a los ca
 user = User.objects.get(username='newuser')
 print(user.userprofile.bio, user.userprofile.birth_date) # Aquí 'userprofile' es el nombre del modelo UserProfile en minúsculas
 # Realizar migraciones para crear la tabla del modelo UserProfile en la base de datos
-# python manage.py makemigrations
-# python manage.py migrate
+# python3 manage.py makemigrations
+# python3 manage.py migrate
 
 ## Otra forma de acceder al modelo User más fácilmente (recomendado) y evitar problemas si se usa un modelo User personalizado en settings.py
 from django.contrib.auth import get_user_model
@@ -1195,8 +1195,8 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 # Realizar migraciones para crear la tabla del modelo CustomUser en la base de datos
-# python manage.py makemigrations
-# python manage.py migrate
+# python3 manage.py makemigrations
+# python3 manage.py migrate
 # Crear un nuevo usuario con el modelo personalizado
 custom_user = CustomUser.objects.create_user(username='customuser', password='password123', bio='This is a custom user.', birth_date='1990-01-01')
 print(custom_user.username, custom_user.bio, custom_user.birth_date) # Acceder a los campos del modelo CustomUser
@@ -1261,14 +1261,14 @@ print(excellent_reviews.query) # Ver el SQL generado por el ORM
 
 ```sh
 # Ver el estado de las migraciones
-python manage.py showmigrations
+python3 manage.py showmigrations
 # Ver las consultas SQL generadas por las migraciones
-python manage.py sqlmigrate myapp 0001_initial
+python3 manage.py sqlmigrate myapp 0001_initial
 # Borrar todas las migraciones y la base de datos (usar con precaución)
 rm -rf myapp/migrations
 rm db.sqlite3
-python manage.py makemigrations
-python manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py migrate
 ```
 
 References:
@@ -1293,13 +1293,13 @@ References:
 ### Crear un superusuario
 
 ```sh
-python manage.py createsuperuser
+python3 manage.py createsuperuser
 ```
 
 ### Acceder al panel de administración
 
 ```sh
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 Abrir en el navegador: http://127.0.0.1:8000/admin/
@@ -1721,3 +1721,241 @@ Y en la plantilla:
   </span>
 </div>
 ```
+
+> [!TIP]
+>
+> Es una buena práctica crear una carpeta de modelos (models) dentro de una aplicación para organizar mejor el código, especialmente cuando hay muchos modelos. Por ejemplo:
+>
+> ```
+> myapp/
+> ├── models/
+> │   ├── __init__.py
+> │   ├── book.py
+> │   └── author.py
+> ├── models.py
+> ├── views.py
+> ├── urls.py
+> └── ...
+> ```
+>
+> En `models/__init__.py`, puedes importar todos los modelos para que estén disponibles cuando importes `myapp.models`:
+>
+> ```python
+> from .book import Book
+> from .author import Author
+> # from .other_model import OtherModel
+> ```
+>
+> También hay que importarlos en el archivo `models.py` de la aplicación:
+>
+> ```python
+> from .models.book import Book   # Importar los modelos desde la carpeta models
+> from .models.author import Author   # Importar los modelos desde la carpeta models
+> ```
+>
+> Y de esta forma es como sí los modelos estuvieran en el archivo `models.py` directamente definidos.
+
+### Fixtures y dumpdata
+
+Esto permite cargar datos iniciales en la base de datos desde un archivo JSON o YAML. Aquí tienes un ejemplo de cómo crear y usar fixtures:
+
+1. Crea un archivo JSON o YAML con los datos que deseas cargar. Por ejemplo, `initial_data.json`:
+
+```json
+[
+  {
+    "model": "myapp.book",
+    "pk": 1,
+    "fields": {
+      "title": "El Quijote",
+      "author": "Miguel de Cervantes"
+    }
+  },
+  {
+    "model": "myapp.author",
+    "pk": 1,
+    "fields": {
+      "name": "Miguel de Cervantes"
+    }
+  }
+]
+```
+
+2. Carga los datos en la base de datos utilizando el comando `loaddata`:
+
+```bash
+python3 manage.py loaddata initial_data.json
+```
+
+3. Para exportar datos existentes a un archivo JSON, puedes usar el comando `dumpdata`:
+
+```bash
+python3 manage.py dumpdata courses > courses.json
+```
+
+Esto creará un archivo `courses.json` con todos los datos de los cursos en la base de datos.
+
+### Signals en Django
+
+Los signals en Django permiten que ciertos remitentes notifiquen a un conjunto de receptores cuando ocurre una acción específica. Esto es útil para desacoplar diferentes partes de tu aplicación y permitir que reaccionen a eventos sin necesidad de que estén directamente conectadas (como triggers en bases de datos). Aquí tienes un ejemplo de cómo usar signals en Django:
+
+```python
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import MyAppConfig
+
+# Signal para crear un perfil de instructor cuando se crea un usuario
+@receiver(post_save, sender=MyAppConfig)
+def course_created(sender, instance, created, **kwargs):
+    if created:
+        print(f"Curso creado: {instance.title}")
+        # Aquí puedes agregar lógica adicional, como enviar un correo electrónico o crear objetos relacionados
+```
+
+En este caso, el signal `post_save` se conecta al modelo `MyAppConfig`, y la función `course_created` se ejecuta cada vez que se crea una nueva instancia de `MyAppConfig`. El parámetro `created` indica si la instancia fue creada (True) o actualizada (False). `instance` es la instancia del modelo que se acaba de guardar, en este caso, un curso por ejemplo que tiene el campo `title`.
+
+Para registrar la señal , asegúrate de importar el módulo de señales en el archivo `apps.py` de tu aplicación:
+
+```python
+# myapp/apps.py
+from django.apps import AppConfig
+class MyAppConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'myapp'
+
+    def ready(self):
+        import myapp.signals  # Importar el módulo de señales para registrar las señales
+```
+
+Ver ejemplo: [Signals](./devilearn/apps/profiles/signals.py) [Profiles App](./devilearn/apps/profiles/apps.py)
+
+[Ver documentación oficial de Django sobre signals](https://docs.djangoproject.com/en/5.2/topics/signals/)
+
+### Tipos de herencia para contenidos polimórficos
+
+Django no soporta directamente la herencia polimórfica en su ORM, pero existen varias estrategias para implementar este patrón. Aquí te presento algunas de las más comunes:
+
+1. **Herencia de modelos abstractos**: Puedes definir una clase base abstracta que contenga los campos comunes y luego crear subclases que hereden de esta clase base. En este caso se comparten campos y métodos entre modelos sin crear una tabla en la base de datos para el modelo base o padre. Sin embargo, cada subclase tendrá su propia tabla en la base de datos.
+
+```python
+from django.db import models
+class Animal(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+
+    class Meta:
+        abstract = True # Esto dice que no debe de crear una tabla para este modelo
+class Dog(Animal):
+    breed = models.CharField(max_length=100)
+class Cat(Animal):
+    color = models.CharField(max_length=100)
+```
+
+Aquí se crean dos tablas en la base de datos: `Dog`, `Cat`, pero no hay una tabla para `Animal` ya que es abstracta. Tanto `Dog` como `Cat` tienen los campos `name` y `age` heredados de `Animal` y los campos específicos `breed` y `color`, respectivamente como campos adicionales referentes a cada subclase. No se crea una tabla para `Animal` en la base de datos (la clase padre es abstracta).
+
+2. **Herencia multi-tabla**: Puedes crear una clase base que no sea abstracta y luego crear subclases que hereden de esta clase base. Cada subclase tendrá su propia tabla en la base de datos, pero todas las tablas estarán relacionadas a través de claves foráneas. Es decir, se crea una tabla para el modelo base o padre y cada subclase tiene su propia tabla que referencia a la tabla del modelo base mediante una clave foránea automática que Django crea (cuando cada clase debe tener su propia tabla en la base de datos, pero quieres que compartan campos de un modelo base o padre). Es similar a una relación OneToOneField implícita entre la tabla del modelo base y la tabla de cada subclase.
+
+```python
+from django.db import models
+class Animal(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+
+    # No hay que poner class Meta: abstract = True aquí porque queremos que se cree una tabla para este modelo
+class Dog(Animal):
+    breed = models.CharField(max_length=100)
+class Cat(Animal):
+    color = models.CharField(max_length=100)
+```
+
+3. **Herencia Proxy**: Cuando quieres cambiar el comportamiento de un modelo sin cambiar su estructura de datos (ni crear una nueva tabla) o cuando quieres agregar métodos personalizados o una nueva lógica a un modelo existente sin crear una nueva tabla en la base de datos. En este caso, no se crean tablas adicionales para las subclases, sino que se utiliza una sola tabla para todos los tipos de objetos y se agrega un campo adicional para identificar el tipo de objeto.
+
+```python
+from django.db import models
+class Animal(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    class Meta:
+        proxy = True # Esto dice que no debe de crear una tabla para este modelo al ser de herecia tipo proxy
+class Dog(Animal):
+    class Meta:
+        proxy = True # Esto dice que no debe de crear una tabla para este modelo
+        ordering = ['name'] # Ejemplo de personalización del ordenamiento al agregar una nueva lógica
+    def bark(self):
+        return "Woof!"
+class Cat(Animal):
+    class Meta:
+        proxy = True # Esto dice que no debe de crear una tabla para este modelo
+    def meow(self):
+        return "Meow!"
+```
+
+En este caso , no se crean tablas adicionales para `Dog` y `Cat`, sino que ambos usan la tabla de `Animal`. Puedes agregar métodos personalizados a las subclases, pero no puedes agregar campos adicionales. Aquí , `Dog` y `Cat` son proxies de `Animal`, lo que significa que comparten la misma tabla en la base de datos pero pueden tener comportamientos diferentes a través de métodos personalizados como `bark` y `meow`.
+
+4. **Uso de una tabla genérica con ContentType**: Puedes usar el framework de ContentTypes de Django para crear una tabla genérica que pueda referenciar cualquier modelo. Esto permite almacenar diferentes tipos de objetos en una sola tabla.
+
+```python
+from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+class Comment(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    text = models.TextField()
+```
+
+En este ejemplo, el modelo `Comment` puede estar asociado a cualquier otro modelo en tu aplicación, lo que permite una relación polimórfica.
+
+Volviendo al ejemplo de Animal, el ejemplo quedaría así:
+
+```python
+from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+class Animal(models.Model):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+class Dog(models.Model):
+    animal = models.OneToOneField(Animal, on_delete=models.CASCADE)
+    breed = models.CharField(max_length=100)
+class Cat(models.Model):
+    animal = models.OneToOneField(Animal, on_delete=models.CASCADE)
+    color = models.CharField(max_length=100)
+class Comment(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    text = models.TextField()
+```
+
+Aquí , el modelo `Comment` puede estar asociado a cualquier instancia de `Animal`, `Dog` o `Cat`, permitiendo una relación polimórfica.
+
+5. **Uso de bibliotecas externas**: Existen bibliotecas como `django-polymorphic` que facilitan la implementación de herencia polimórfica en Django. Estas bibliotecas proporcionan funcionalidades adicionales para manejar modelos polimórficos de manera más sencilla.
+
+```python
+from polymorphic.models import PolymorphicModel
+class Animal(PolymorphicModel):
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+class Dog(Animal):
+    breed = models.CharField(max_length=100)
+class Cat(Animal):
+    color = models.CharField(max_length=100)
+```
+
+> [!TIP]
+>
+> - Cada estrategia tiene sus propias ventajas y desventajas, y la elección de una u otra dependerá de las necesidades específicas de tu aplicación.
+> - La herencia de modelos abstractos es útil cuando quieres compartir campos y métodos entre modelos sin crear una tabla para el modelo base.
+> - La herencia multi-tabla es útil cuando quieres que cada subclase tenga su propia tabla en la base de datos pero compartan campos de un modelo base.
+> - La herencia proxy es útil cuando quieres cambiar el comportamiento de un modelo sin cambiar su estructura de datos.
+> - El uso de una tabla genérica con ContentType es útil cuando quieres almacenar diferentes tipos de objetos en una sola tabla.
+> - El uso de bibliotecas externas como `django-polymorphic` puede facilitar la implementación de herencia polimórfica en Django.
+> - Consulta la documentación oficial de Django y las bibliotecas externas para más detalles sobre cada estrategia y cómo implementarlas correctamente.
+> - Recuerda que la herencia polimórfica puede agregar complejidad a tu modelo de datos, así que asegúrate de evaluar si realmente necesitas esta funcionalidad antes de implementarla.
+>   Consulta la documentación oficial de Django sobre herencia de modelos: https://docs.djangoproject.com/en/5.2/topics/db/models/#model-inheritance
+>   Consulta la documentación oficial de django-polymorphic: https://django-polymorphic.readthedocs.io/en/latest/
+
+> [!NOTE]
+> Revisa la sección 195. Modelo personalizado.
