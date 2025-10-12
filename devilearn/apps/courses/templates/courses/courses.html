@@ -1,23 +1,21 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block custom_styles %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+{% block title %}Todos los cursos{% endblock title %}
+{% block custom_styles %} 
+<link rel="stylesheet" href="{% static 'css/styles.css'%}" />
 {% endblock custom_styles %}
 
-{% block title %}
-    Todos los cursos
-{% endblock %}
 
 {% block content %}
+
     <div class="layout">
 
-        {% include 'includes/sidebar.html' %}
+       {% include 'includes/sidebar.html' %}
 
 
         <!-- Main content -->
         <div class="main-content">
-            <!-- Header -->
             {% include 'includes/header.html' %}
             <!-- Aquí va el contenido de la página -->
             <main>
@@ -25,38 +23,50 @@
 
                 <div class="carousel-wrapper">
                     <div class="course-grid">
-                        <div class="course-grid">
-                            {% for course in courses %}
-                            <div class="course-card">
-                                <a href="{% url 'course_detail' %}">
-                                    <img src="{% static course.course_image %}" alt="Course Image" class="course-img" />
+
+                            {% for course in courses_obj %}
+                                <div class="course-card">
+                                <a href="{% url 'course_detail' slug=course.slug %}">
+                                    <img src="{{ course.image }}" alt="Course Image" class="course-img" />
                                     <div class="course-info">
                                         <div class="course-rating">
                                             <span class="tag beginner">{{ course.level }}</span>
                                             <div class="course-meta">
-                                                <span><i class="fa-solid fa-star"></i> {{ course.rating }}</span>
+                                                <span><i class="fa-solid fa-star"></i> {{course.rating}}</span>
                                             </div>
                                         </div>
 
-                                        <h3 class="course-title">{{ course.course_title }}</h3>
-                                        <div class="author"><img src="{{ course.instructor_image }}"
-                                                alt=""><span>{{ course.instructor }}</span></div>
+                                        <h3 class="course-title">{{course.title}}
+                                        </h3>
+                                        <div class="author"><img src="{{ course.owner.instructor_profile.photo }}"
+                                                alt=""><span>{{ course.owner.get_full_name }}</span></div>
                                     </div>
 
                                 </a>
                             </div>
-                            {% endfor %}    
-                        
-                        </div>
+                            {% endfor %}
+                    </div>
+                     <div class="paginator">                        
+                        {% if courses_obj.has_previous %}
+                            <a href="?page=1&{{query_string}}">Primera</a>
+                            <a href="?page={{courses_obj.previous_page_number}}&{{query_string}}">Anterior</a>
+                        {% endif %}
+
+                        <span>Página {{courses_obj.number}} de {{courses_obj.paginator.num_pages}}</span>
+
+                        {% if courses_obj.has_next %}
+                            <a href="?page={{courses_obj.next_page_number}}&{{query_string}}">Siguiente</a>
+                            <a href="?page={{courses_obj.paginator.num_pages}}&{{query_string}}">Última</a>
+                        {% endif %}
+                            
                     </div>
                 </div>
 
             </main>
         </div>
     </div>
+   
 
-{% endblock %}
-
-{% block scripts %}
-    <script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
+{% endblock content %}
+    
+{% block scripts %} <script src="{% static 'js/script.js'%}"></script>{% endblock scripts %}

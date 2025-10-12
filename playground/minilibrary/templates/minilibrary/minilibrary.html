@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minilibrary</title>
+  </head>
+  <body>
+    <h1>Welcome to the Minilibrary</h1>
+    <p>This is a placeholder for the Minilibrary application.</p>
+    <form method="get" action="">
+      <input
+        type="text"
+        name="query_search"
+        placeholder="Search books for title or author..."
+        value="{{ request.GET.query_search }}"
+      />
+      <input type="date" name="start" value="{{ request.GET.start }}" />
+      <input type="date" name="end" value="{{ request.GET.end }}" />
+      <button type="submit">Search</button>
+    </form>
+
+    <ul>
+      {% for book in page_obj %}
+      <li>{{ book.title }} by {{ book.author.name }} - {{ book.publication_date }}</li>
+      {% empty %}
+      <li>No books found.</li>
+      {% endfor %}
+    </ul>
+
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?{{ query_string }}&page=1">&laquo; first</a>
+        <a href="?{{ query_string }}&page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?{{ query_string }}&page={{ page_obj.next_page_number }}">next</a>
+        <a href="?{{ query_string }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+      </span>
+  </body>
+</html>

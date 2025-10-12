@@ -1,0 +1,1230 @@
+[
+  {
+    "model": "minilibrary.author",
+    "pk": 1,
+    "fields": { "name": "Autor 1", "birth_date": "1951-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 2,
+    "fields": { "name": "Autor 2", "birth_date": "1952-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 3,
+    "fields": { "name": "Autor 3", "birth_date": "1953-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 4,
+    "fields": { "name": "Autor 4", "birth_date": "1954-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 5,
+    "fields": { "name": "Autor 5", "birth_date": "1955-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 6,
+    "fields": { "name": "Autor 6", "birth_date": "1956-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 7,
+    "fields": { "name": "Autor 7", "birth_date": "1957-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 8,
+    "fields": { "name": "Autor 8", "birth_date": "1958-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 9,
+    "fields": { "name": "Autor 9", "birth_date": "1959-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 10,
+    "fields": { "name": "Autor 10", "birth_date": "1960-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 11,
+    "fields": { "name": "Autor 11", "birth_date": "1961-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 12,
+    "fields": { "name": "Autor 12", "birth_date": "1962-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 13,
+    "fields": { "name": "Autor 13", "birth_date": "1963-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 14,
+    "fields": { "name": "Autor 14", "birth_date": "1964-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 15,
+    "fields": { "name": "Autor 15", "birth_date": "1965-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 16,
+    "fields": { "name": "Autor 16", "birth_date": "1966-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 17,
+    "fields": { "name": "Autor 17", "birth_date": "1967-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 18,
+    "fields": { "name": "Autor 18", "birth_date": "1968-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 19,
+    "fields": { "name": "Autor 19", "birth_date": "1969-01-01" }
+  },
+  {
+    "model": "minilibrary.author",
+    "pk": 20,
+    "fields": { "name": "Autor 20", "birth_date": "1970-01-01" }
+  },
+  { "model": "minilibrary.genre", "pk": 1, "fields": { "name": "Ficción" } },
+  { "model": "minilibrary.genre", "pk": 2, "fields": { "name": "Drama" } },
+  {
+    "model": "minilibrary.genre",
+    "pk": 3,
+    "fields": { "name": "Ciencia Ficción" }
+  },
+  { "model": "minilibrary.genre", "pk": 4, "fields": { "name": "Distopía" } },
+  { "model": "minilibrary.genre", "pk": 5, "fields": { "name": "Aventura" } },
+  { "model": "minilibrary.genre", "pk": 6, "fields": { "name": "Romance" } },
+  { "model": "minilibrary.genre", "pk": 7, "fields": { "name": "Misterio" } },
+  { "model": "minilibrary.genre", "pk": 8, "fields": { "name": "Histórico" } },
+  { "model": "minilibrary.genre", "pk": 9, "fields": { "name": "Poesía" } },
+  {
+    "model": "minilibrary.genre",
+    "pk": 10,
+    "fields": { "name": "Fantástico" }
+  },
+  { "model": "minilibrary.genre", "pk": 11, "fields": { "name": "Biografía" } },
+  { "model": "minilibrary.genre", "pk": 12, "fields": { "name": "Ensayo" } },
+  { "model": "minilibrary.genre", "pk": 13, "fields": { "name": "Horror" } },
+  { "model": "minilibrary.genre", "pk": 14, "fields": { "name": "Thriller" } },
+  { "model": "minilibrary.genre", "pk": 15, "fields": { "name": "Policíaco" } },
+  { "model": "minilibrary.genre", "pk": 16, "fields": { "name": "Humor" } },
+  { "model": "minilibrary.genre", "pk": 17, "fields": { "name": "Infantil" } },
+  { "model": "minilibrary.genre", "pk": 18, "fields": { "name": "Juvenil" } },
+  { "model": "minilibrary.genre", "pk": 19, "fields": { "name": "Filosofía" } },
+  { "model": "minilibrary.genre", "pk": 20, "fields": { "name": "Autoayuda" } },
+  {
+    "model": "minilibrary.book",
+    "pk": 1,
+    "fields": {
+      "title": "Libro 1",
+      "publication_date": "2001-06-01",
+      "author": 15,
+      "pages": 514,
+      "isbn": "ISBN-1001",
+      "genres": [1, 5]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 2,
+    "fields": {
+      "title": "Libro 2",
+      "publication_date": "2002-06-01",
+      "author": 8,
+      "pages": 464,
+      "isbn": "ISBN-1002",
+      "genres": [2, 12]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 3,
+    "fields": {
+      "title": "Libro 3",
+      "publication_date": "2003-06-01",
+      "author": 8,
+      "pages": 247,
+      "isbn": "ISBN-1003",
+      "genres": [7, 10]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 4,
+    "fields": {
+      "title": "Libro 4",
+      "publication_date": "2004-06-01",
+      "author": 10,
+      "pages": 438,
+      "isbn": "ISBN-1004",
+      "genres": [1, 15]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 5,
+    "fields": {
+      "title": "Libro 5",
+      "publication_date": "2005-06-01",
+      "author": 1,
+      "pages": 273,
+      "isbn": "ISBN-1005",
+      "genres": [9, 18]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 6,
+    "fields": {
+      "title": "Libro 6",
+      "publication_date": "2006-06-01",
+      "author": 9,
+      "pages": 294,
+      "isbn": "ISBN-1006",
+      "genres": [3, 17]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 7,
+    "fields": {
+      "title": "Libro 7",
+      "publication_date": "2007-06-01",
+      "author": 20,
+      "pages": 286,
+      "isbn": "ISBN-1007",
+      "genres": [17, 20]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 8,
+    "fields": {
+      "title": "Libro 8",
+      "publication_date": "2008-06-01",
+      "author": 6,
+      "pages": 508,
+      "isbn": "ISBN-1008",
+      "genres": [17, 19]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 9,
+    "fields": {
+      "title": "Libro 9",
+      "publication_date": "2009-06-01",
+      "author": 6,
+      "pages": 179,
+      "isbn": "ISBN-1009",
+      "genres": [1, 8]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 10,
+    "fields": {
+      "title": "Libro 10",
+      "publication_date": "2010-06-01",
+      "author": 15,
+      "pages": 215,
+      "isbn": "ISBN-1010",
+      "genres": [3, 9]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 11,
+    "fields": {
+      "title": "Libro 11",
+      "publication_date": "2011-06-01",
+      "author": 15,
+      "pages": 375,
+      "isbn": "ISBN-1011",
+      "genres": [13, 19]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 12,
+    "fields": {
+      "title": "Libro 12",
+      "publication_date": "2012-06-01",
+      "author": 8,
+      "pages": 403,
+      "isbn": "ISBN-1012",
+      "genres": [5, 9]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 13,
+    "fields": {
+      "title": "Libro 13",
+      "publication_date": "2013-06-01",
+      "author": 13,
+      "pages": 163,
+      "isbn": "ISBN-1013",
+      "genres": [3, 5]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 14,
+    "fields": {
+      "title": "Libro 14",
+      "publication_date": "2014-06-01",
+      "author": 8,
+      "pages": 486,
+      "isbn": "ISBN-1014",
+      "genres": [2, 13]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 15,
+    "fields": {
+      "title": "Libro 15",
+      "publication_date": "2015-06-01",
+      "author": 11,
+      "pages": 269,
+      "isbn": "ISBN-1015",
+      "genres": [1, 3]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 16,
+    "fields": {
+      "title": "Libro 16",
+      "publication_date": "2016-06-01",
+      "author": 11,
+      "pages": 393,
+      "isbn": "ISBN-1016",
+      "genres": [6, 10]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 17,
+    "fields": {
+      "title": "Libro 17",
+      "publication_date": "2017-06-01",
+      "author": 20,
+      "pages": 413,
+      "isbn": "ISBN-1017",
+      "genres": [9, 20]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 18,
+    "fields": {
+      "title": "Libro 18",
+      "publication_date": "2018-06-01",
+      "author": 3,
+      "pages": 451,
+      "isbn": "ISBN-1018",
+      "genres": [12, 20]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 19,
+    "fields": {
+      "title": "Libro 19",
+      "publication_date": "2019-06-01",
+      "author": 5,
+      "pages": 262,
+      "isbn": "ISBN-1019",
+      "genres": [3, 12]
+    }
+  },
+  {
+    "model": "minilibrary.book",
+    "pk": 20,
+    "fields": {
+      "title": "Libro 20",
+      "publication_date": "2020-06-01",
+      "author": 7,
+      "pages": 358,
+      "isbn": "ISBN-1020",
+      "genres": [13, 16]
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 1,
+    "fields": {
+      "book": 1,
+      "summary": "Resumen de Libro 1",
+      "cover_url": "https://picsum.photos/seed/1/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 2,
+    "fields": {
+      "book": 2,
+      "summary": "Resumen de Libro 2",
+      "cover_url": "https://picsum.photos/seed/2/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 3,
+    "fields": {
+      "book": 3,
+      "summary": "Resumen de Libro 3",
+      "cover_url": "https://picsum.photos/seed/3/200/300",
+      "language": "Francés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 4,
+    "fields": {
+      "book": 4,
+      "summary": "Resumen de Libro 4",
+      "cover_url": "https://picsum.photos/seed/4/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 5,
+    "fields": {
+      "book": 5,
+      "summary": "Resumen de Libro 5",
+      "cover_url": "https://picsum.photos/seed/5/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 6,
+    "fields": {
+      "book": 6,
+      "summary": "Resumen de Libro 6",
+      "cover_url": "https://picsum.photos/seed/6/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 7,
+    "fields": {
+      "book": 7,
+      "summary": "Resumen de Libro 7",
+      "cover_url": "https://picsum.photos/seed/7/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 8,
+    "fields": {
+      "book": 8,
+      "summary": "Resumen de Libro 8",
+      "cover_url": "https://picsum.photos/seed/8/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 9,
+    "fields": {
+      "book": 9,
+      "summary": "Resumen de Libro 9",
+      "cover_url": "https://picsum.photos/seed/9/200/300",
+      "language": "Francés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 10,
+    "fields": {
+      "book": 10,
+      "summary": "Resumen de Libro 10",
+      "cover_url": "https://picsum.photos/seed/10/200/300",
+      "language": "Francés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 11,
+    "fields": {
+      "book": 11,
+      "summary": "Resumen de Libro 11",
+      "cover_url": "https://picsum.photos/seed/11/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 12,
+    "fields": {
+      "book": 12,
+      "summary": "Resumen de Libro 12",
+      "cover_url": "https://picsum.photos/seed/12/200/300",
+      "language": "Francés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 13,
+    "fields": {
+      "book": 13,
+      "summary": "Resumen de Libro 13",
+      "cover_url": "https://picsum.photos/seed/13/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 14,
+    "fields": {
+      "book": 14,
+      "summary": "Resumen de Libro 14",
+      "cover_url": "https://picsum.photos/seed/14/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 15,
+    "fields": {
+      "book": 15,
+      "summary": "Resumen de Libro 15",
+      "cover_url": "https://picsum.photos/seed/15/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 16,
+    "fields": {
+      "book": 16,
+      "summary": "Resumen de Libro 16",
+      "cover_url": "https://picsum.photos/seed/16/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 17,
+    "fields": {
+      "book": 17,
+      "summary": "Resumen de Libro 17",
+      "cover_url": "https://picsum.photos/seed/17/200/300",
+      "language": "Español",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 18,
+    "fields": {
+      "book": 18,
+      "summary": "Resumen de Libro 18",
+      "cover_url": "https://picsum.photos/seed/18/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 19,
+    "fields": {
+      "book": 19,
+      "summary": "Resumen de Libro 19",
+      "cover_url": "https://picsum.photos/seed/19/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.bookdetail",
+    "pk": 20,
+    "fields": {
+      "book": 20,
+      "summary": "Resumen de Libro 20",
+      "cover_url": "https://picsum.photos/seed/20/200/300",
+      "language": "Inglés",
+      "publisher": null
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 1,
+    "fields": {
+      "book": 20,
+      "user": 6,
+      "rating": 3,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 2,
+    "fields": {
+      "book": 16,
+      "user": 18,
+      "rating": 2,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 3,
+    "fields": {
+      "book": 11,
+      "user": 1,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 4,
+    "fields": {
+      "book": 2,
+      "user": 2,
+      "rating": 3,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 5,
+    "fields": {
+      "book": 10,
+      "user": 14,
+      "rating": 1,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 6,
+    "fields": {
+      "book": 18,
+      "user": 14,
+      "rating": 1,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 7,
+    "fields": {
+      "book": 14,
+      "user": 18,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 8,
+    "fields": {
+      "book": 10,
+      "user": 5,
+      "rating": 1,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 9,
+    "fields": {
+      "book": 10,
+      "user": 6,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 10,
+    "fields": {
+      "book": 13,
+      "user": 7,
+      "rating": 1,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 11,
+    "fields": {
+      "book": 10,
+      "user": 10,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 12,
+    "fields": {
+      "book": 3,
+      "user": 10,
+      "rating": 3,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 13,
+    "fields": {
+      "book": 2,
+      "user": 1,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 14,
+    "fields": {
+      "book": 3,
+      "user": 18,
+      "rating": 4,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 15,
+    "fields": {
+      "book": 10,
+      "user": 3,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 16,
+    "fields": {
+      "book": 3,
+      "user": 18,
+      "rating": 2,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 17,
+    "fields": {
+      "book": 18,
+      "user": 12,
+      "rating": 4,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 18,
+    "fields": {
+      "book": 18,
+      "user": 10,
+      "rating": 4,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 19,
+    "fields": {
+      "book": 7,
+      "user": 20,
+      "rating": 5,
+      "text": "Excelente lectura",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.review",
+    "pk": 20,
+    "fields": {
+      "book": 3,
+      "user": 9,
+      "rating": 1,
+      "text": "Interesante pero mejorable",
+      "created_at": "2025-09-28T20:53:11.782Z"
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 1,
+    "fields": {
+      "book": 17,
+      "user": 11,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-08-15T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 2,
+    "fields": {
+      "book": 17,
+      "user": 18,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 3,
+    "fields": {
+      "book": 19,
+      "user": 17,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-09-03T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 4,
+    "fields": {
+      "book": 17,
+      "user": 14,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 5,
+    "fields": {
+      "book": 20,
+      "user": 3,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-08-27T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 6,
+    "fields": {
+      "book": 17,
+      "user": 20,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 7,
+    "fields": {
+      "book": 17,
+      "user": 4,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-09-11T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 8,
+    "fields": {
+      "book": 5,
+      "user": 15,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 9,
+    "fields": {
+      "book": 15,
+      "user": 13,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-10-11T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 10,
+    "fields": {
+      "book": 17,
+      "user": 12,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 11,
+    "fields": {
+      "book": 3,
+      "user": 7,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-10-06T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 12,
+    "fields": {
+      "book": 6,
+      "user": 7,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 13,
+    "fields": {
+      "book": 6,
+      "user": 10,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-10-08T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 14,
+    "fields": {
+      "book": 16,
+      "user": 19,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 15,
+    "fields": {
+      "book": 12,
+      "user": 1,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-09-10T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 16,
+    "fields": {
+      "book": 11,
+      "user": 2,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 17,
+    "fields": {
+      "book": 3,
+      "user": 5,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-08-31T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 18,
+    "fields": {
+      "book": 12,
+      "user": 5,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 19,
+    "fields": {
+      "book": 8,
+      "user": 14,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": "2025-10-09T20:53:11.783Z",
+      "is_returned": true
+    }
+  },
+  {
+    "model": "minilibrary.loan",
+    "pk": 20,
+    "fields": {
+      "book": 7,
+      "user": 14,
+      "loan_date": "2025-09-28T20:53:11.784Z",
+      "return_date": null,
+      "is_returned": false
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 1,
+    "fields": {
+      "user": 16,
+      "book": 1,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 2,
+    "fields": {
+      "user": 10,
+      "book": 2,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 3,
+    "fields": {
+      "user": 7,
+      "book": 3,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "book": 4,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 5,
+    "fields": {
+      "user": 3,
+      "book": 5,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 6,
+    "fields": {
+      "user": 19,
+      "book": 6,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 7,
+    "fields": {
+      "user": 2,
+      "book": 7,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 8,
+    "fields": {
+      "user": 2,
+      "book": 8,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 9,
+    "fields": {
+      "user": 3,
+      "book": 9,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 10,
+    "fields": {
+      "user": 14,
+      "book": 10,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 11,
+    "fields": {
+      "user": 3,
+      "book": 11,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 12,
+    "fields": {
+      "user": 14,
+      "book": 12,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 13,
+    "fields": {
+      "user": 12,
+      "book": 13,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 14,
+    "fields": {
+      "user": 11,
+      "book": 14,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 15,
+    "fields": {
+      "user": 16,
+      "book": 15,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 16,
+    "fields": {
+      "user": 4,
+      "book": 16,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 17,
+    "fields": {
+      "user": 2,
+      "book": 17,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 18,
+    "fields": {
+      "user": 11,
+      "book": 18,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 19,
+    "fields": {
+      "user": 9,
+      "book": 19,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  },
+  {
+    "model": "minilibrary.recommendation",
+    "pk": 20,
+    "fields": {
+      "user": 8,
+      "book": 20,
+      "recommended_at": "2025-09-28T20:53:11.784Z",
+      "note": "¡Tienes que leerlo!"
+    }
+  }
+]
