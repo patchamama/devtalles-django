@@ -31,7 +31,7 @@ def course_list(request):
 
 
 
-def course_detail(request):
+def course_detail(request, slug):
     course = {
         'course_title': 'Django Aplicaciones',
         'course_link': 'course_lessons',
