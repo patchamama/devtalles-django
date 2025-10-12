@@ -290,7 +290,7 @@ Ref: https://docs.djangoproject.com/en/5.2/ref/templates/builtins/
 - `{% include "partial.html" %}`: Incluye otra plantilla dentro de la actual.
 - `{% url 'view_name' %}`: Genera una URL basada en el nombre de la vista.
 - `{% csrf_token %}`: Inserta un token CSRF para proteger formularios contra ataques CSRF.
-- `{% load static %}`: Carga el sistema de archivos estáticos para usar archivos CSS, JS, imágenes, etc.
+- `{% load static %}`: Carga el sistema de archivos estáticos para usar archivos CSS, JS, imagenes, etc.
 - `{% comment %} ... {% endcomment %}`: Permite agregar comentarios en la plantilla que no se renderizan en el HTML final.
 - `{% with variable=value %} ... {% endwith %}`: Asigna un valor a una variable temporal dentro del bloque.
 - `{% verbatim %} ... {% endverbatim %}`: Evita que el contenido dentro del bloque sea procesado por el motor de plantillas de Django.
@@ -1963,5 +1963,5 @@ class Cat(Animal):
 ## Sección 13: Proyecto - Renderizado, paginación y búsquedas
 
 > [!TIP]
-> Sí no tienes una imágen a mostrar en el detalle del libro, puedes usar una imágen por defecto (placeholder) para evitar errores 404. Puedes descargar una imágen de placeholder desde https://via.placeholder.com/150 y guardarla en la carpeta `media/placeholders/placeholder.png`. Luego, en el modelo `Book`, puedes usar esta imágen por defecto si no se proporciona una imágen específica para el libro. Existe la opción de usar esta estructura de url para obtener una imágen de placeholder dinámica: `https://placehold.co/600x200/color-fondo/color-texto?text=texto-a-mostrar`, ejemplo: `https://placehold.co/600x200/1e1e1e/ffffff?text=Sin+imagen`.
+> Sí no tienes una imagen a mostrar en el detalle del libro, puedes usar una imagen por defecto (placeholder) para evitar errores 404. Puedes descargar una imagen de placeholder desde https://via.placeholder.com/150 y guardarla en la carpeta `media/placeholders/placeholder.png`. Luego, en el modelo `Book`, puedes usar esta imagen por defecto si no se proporciona una imagen específica para el libro. Existe la opción de usar esta estructura de url para obtener una imagen de placeholder dinámica: `https://placehold.co/600x200/color-fondo/color-texto?text=texto-a-mostrar`, ejemplo: `https://placehold.co/600x200/1e1e1e/ffffff?text=Sin+imagen`.
 
