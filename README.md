@@ -1965,3 +1965,96 @@ class Cat(Animal):
 > [!TIP]
 > Sí no tienes una imagen a mostrar en el detalle del libro, puedes usar una imagen por defecto (placeholder) para evitar errores 404. Puedes descargar una imagen de placeholder desde https://via.placeholder.com/150 y guardarla en la carpeta `media/placeholders/placeholder.png`. Luego, en el modelo `Book`, puedes usar esta imagen por defecto si no se proporciona una imagen específica para el libro. Existe la opción de usar esta estructura de url para obtener una imagen de placeholder dinámica: `https://placehold.co/600x200/color-fondo/color-texto?text=texto-a-mostrar`, ejemplo: `https://placehold.co/600x200/1e1e1e/ffffff?text=Sin+imagen`.
 
+## Sección 14. Formularios y validaciones
+
+Diferencia entre `forms.Form` y `forms.ModelForm`
+
+- `forms.Form`: Es una clase base para crear formularios en Django. Se utiliza para definir campos y validaciones de forma manual. No está vinculada a un modelo específico y se puede utilizar para cualquier tipo de formulario.
+
+- `forms.ModelForm`: Es una subclase de `forms.Form` que se utiliza para crear formularios basados en modelos de Django. Automáticamente genera campos de formulario a partir de los campos del modelo y maneja la validación y el guardado de datos en la base de datos de manera más sencilla.
+
+```python
+# Crear un formulario manual con forms.Form y un formulario basado en un modelo con forms.ModelForm
+# myapp/forms.py (debes de crear esta archivo manualmente pues no existe por defecto)
+from django import forms
+from .models import Book
+
+class BookForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    author = forms.CharField(max_length=100)
+    published_date = forms.DateField()
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Escribe tu reseña aquí...',
+            'class': 'form-control',
+            'rows': 4
+        })
+    )
+
+class BookModelForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'author', 'published_date']
+```
+
+En este ejemplo, `BookForm` es un formulario manual donde se definen los campos y sus validaciones, mientras que `BookModelForm` es un formulario basado en el modelo `Book`, que automáticamente genera los campos y maneja la validación y el guardado de datos en la base de datos.
+
+Hay que agregar el form a la vista:
+
+```python
+# myapp/views.py
+from django.shortcuts import render, redirect
+from .forms import BookForm, BookModelForm
+from .models import Book
+def add_book(request):
+    if request.method == 'POST':
+        form = BookModelForm(request.POST)  # Usar BookModelForm para manejar el formulario basado en el modelo
+        if form.is_valid():
+            form.save()  # Guardar el nuevo libro en la base de datos
+            return redirect('book_list')  # Redirigir a la lista de libros después de guardar
+    else:
+        form = BookModelForm()  # Crear un formulario vacío para GET request
+    return render(request, 'myapp/add_book.html', {'form': form})
+```
+
+Hay que crear el formulario con la pantilla HTML:
+
+```html
+<!-- myapp/templates/myapp/add_book.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Añadir Libro</title>
+  </head>
+  <body>
+    <h1>Añadir Libro</h1>
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Guardar</button>
+    </form>
+  </body>
+</html>
+```
+
+Y en `urls.py`:
+
+```python
+# myapp/urls.py
+from django.urls import path
+from .views import add_book
+urlpatterns = [
+    path('add-book/', add_book, name='add_book'),
+]
+```
+
+> [!NOTE]
+>
+> `{% csrf_token %}` es una plantilla de Django que se utiliza para proteger los formularios contra ataques CSRF (Cross-Site Request Forgery). Este token se genera automáticamente por Django y debe incluirse en cualquier formulario que realice una solicitud POST para garantizar que la solicitud proviene de una fuente confiable. Al incluir `{% csrf_token %}` en el formulario, se agrega un campo oculto con el token CSRF, que Django verifica al procesar la solicitud. Si el token no coincide o falta, Django rechazará la solicitud por razones de seguridad.
+> Consulta la documentación oficial de Django sobre formularios: https://docs.djangoproject.com/en/5.2/topics/forms/
+> Consulta la documentación oficial de Django sobre ModelForm: https://docs.djangoproject.com/en/5.2/topics/forms/modelforms/
+> Consulta la documentación oficial de Django sobre protección CSRF: https://docs.djangoproject.com/en/5.2/ref/csrf/
+>
+> `form.as_p` es un método de los formularios en Django que renderiza todos los campos del formulario como párrafos HTML (`<p>`). Cada campo del formulario se envuelve en un elemento `<p>`, lo que facilita la presentación de los campos en la plantilla. Este método es útil para mostrar rápidamente un formulario sin necesidad de definir manualmente la estructura HTML para cada campo. Sin embargo, si deseas un control más detallado sobre la apariencia y el diseño del formulario, puedes renderizar cada campo individualmente en lugar de usar `form.as_p`. También se puede usar `form.as_table` para renderizar los campos en una tabla HTML o `form.as_ul` para renderizarlos en una lista desordenada HTML.
+
