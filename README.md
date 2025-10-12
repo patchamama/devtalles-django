@@ -1961,3 +1961,7 @@ class Cat(Animal):
 > Revisa la sección 195. Modelo personalizado.
 
 ## Sección 13: Proyecto - Renderizado, paginación y búsquedas
+
+> [!TIP]
+> Sí no tienes una imágen a mostrar en el detalle del libro, puedes usar una imágen por defecto (placeholder) para evitar errores 404. Puedes descargar una imágen de placeholder desde https://via.placeholder.com/150 y guardarla en la carpeta `media/placeholders/placeholder.png`. Luego, en el modelo `Book`, puedes usar esta imágen por defecto si no se proporciona una imágen específica para el libro. Existe la opción de usar esta estructura de url para obtener una imágen de placeholder dinámica: `https://placehold.co/600x200/color-fondo/color-texto?text=texto-a-mostrar`, ejemplo: `https://placehold.co/600x200/1e1e1e/ffffff?text=Sin+imagen`.
+
