@@ -1,22 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Dashboard{% endblock title %}
 
 {% block custom_styles %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 {% endblock custom_styles %}
 
-{% block title %}
-    Panel de control
-{% endblock %}
-
 {% block content %}
-    <div class="layout">
+<div class="layout">
 
         {% include 'includes/sidebar.html' %}
 
         <!-- Main content -->
         <div class="main-content">
-            
             {% include 'includes/header.html' %}
 
             <!-- Aquí va el contenido de la página -->
@@ -47,9 +43,10 @@
             </main>
         </div>
     </div>
-
-{% endblock %}
+{% endblock content %}
+    
+    
 
 {% block scripts %}
-    <script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
+<script src="{% static 'js/script.js'%}"></script>
+{% endblock scripts %}

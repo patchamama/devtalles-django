@@ -1959,3 +1959,5 @@ class Cat(Animal):
 
 > [!NOTE]
 > Revisa la sección 195. Modelo personalizado.
+
+## Sección 13: Proyecto - Renderizado, paginación y búsquedas

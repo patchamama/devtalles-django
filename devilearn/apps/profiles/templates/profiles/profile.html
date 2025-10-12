@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block title %}Perfil de usuario{% endblock title %}
 {% block custom_styles %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
 {% endblock custom_styles %}
-
-{% block title %}Perfil de usuario{% endblock %}
-
 {% block content %}
-    <div class="layout">
+<div class="layout">
 
         {% include 'includes/sidebar.html' %}
 
@@ -16,6 +14,7 @@
         <div class="main-content">
             <!-- Header -->
             {% include 'includes/header.html' %}
+
             <!-- Aquí va el contenido de la página -->
             <main>
                 <div class="profile-container">
@@ -70,8 +69,10 @@
             </main>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}
+    
 
 {% block scripts %}
-    <script src="{% static 'js/script.js' %}"></script>
-{% endblock %}
+    <script src="./js/script.js"></script>
+{% endblock scripts %}
+    

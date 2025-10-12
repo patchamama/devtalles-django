@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (Category, Course, CourseCategory,
-                     Module, Enrollment, Progress, Review) # , Content, Text, Video, File, Image
+                     Module, Enrollment, Progress, Review)
 # Register your models here.
 
 
