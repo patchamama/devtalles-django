@@ -5,5 +5,5 @@ from .models.module import Module
 from .models.progress import Progress
 from .models.enrollment import Enrollment
 from .models.review import Review
-from .models.content import Content
+from .models.content import Content, Text, File, Video, Image
 # Create your models here.
