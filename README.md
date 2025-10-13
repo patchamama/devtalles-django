@@ -2058,3 +2058,5 @@ urlpatterns = [
 >
 > `form.as_p` es un método de los formularios en Django que renderiza todos los campos del formulario como párrafos HTML (`<p>`). Cada campo del formulario se envuelve en un elemento `<p>`, lo que facilita la presentación de los campos en la plantilla. Este método es útil para mostrar rápidamente un formulario sin necesidad de definir manualmente la estructura HTML para cada campo. Sin embargo, si deseas un control más detallado sobre la apariencia y el diseño del formulario, puedes renderizar cada campo individualmente en lugar de usar `form.as_p`. También se puede usar `form.as_table` para renderizar los campos en una tabla HTML o `form.as_ul` para renderizarlos en una lista desordenada HTML.
 
+## Sección 15. Function-Based Views (FBV) vs. Class-Based Views (CBV)
+
