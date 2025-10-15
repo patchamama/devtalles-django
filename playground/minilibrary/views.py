@@ -3,99 +3,155 @@ from django.http import HttpResponseNotFound
 from .models import Book, Review
 from django.db.models import Q
 from django.core.paginator import Paginator
-from .forms import ReviewSimpleForm
+from .forms import ReviewForm
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.http import HttpResponse
+from django.views import View
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 # Create your views here.
 
 User = get_user_model()
 
-# Create your views here.
+
+class Hello(View):
+    def get(self, request):
+        return HttpResponse("Hola mundo desde CBV")
+
+
+class WelcomeView(TemplateView):
+    template_name = "minilibrary/welcome.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_books'] = Book.objects.count()
+        return context
+
+
+class BookListView(ListView):
+    model = Book
+    template_name = "minilibrary/book_list.html"
+    context_object_name = "books"
+    paginate_by = 5
+
+
+class BookDetailView(DetailView):
+    model = Book
+    template_name = "minilibrary/book_detail.html"
+    context_object_name = "book"
+    # slug_field = "slug"
+    # slug_url_karg = "slug"
+
+
+class ReviewCreateView(CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = "minilibrary/add_review.html"
+
+    def form_valid(self, form):
+        book_id = self.kwargs.get("pk")
+        book = Book.objects.get(pk=book_id)
+        form.instance.book = book
+        form.instance.user_id = 1
+        messages.success(self.request, "Gracais por tu reseña.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("book_detail", kwargs={"pk": self.kwargs.get("pk")})
+
+
+class ReviewUpdateView(UpdateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = "minilibrary/add_review.html"
+
+    def get_queryset(self):
+        return Review.objects.filter(user_id=1)
+
+    def form_valid(self, form):
+        messages.success(
+            self.request, "Se ha actualizo tu reseña, correctamente.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Hubo un error al guardara los cambios.")
+
+    def get_success_url(self):
+        review = Review.objects.get(pk=self.kwargs.get("pk"))
+        book_id = review.book.id
+        return reverse_lazy("book_detail", kwargs={"pk": book_id})
+
+
+class ReviewDeleteView(DeleteView):
+    model = Review
+    template_name = "minilibrary/review_confirm_delete.html"
+    success_url = reverse_lazy("book_list")
+
+    def get_queryset(self):
+        return Review.objects.filter(user_id=1)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Tu reseña fue eliminada.")
+        return super().delete(request, *args, **kwargs)
+
+
 def index(request):
     try:
         books = Book.objects.all()
-        query = request.GET.get('query_search', None)  # Obtener el parámetro de búsqueda 'query_search' de la URL si está presente
-        date_start = request.GET.get('date_start', None)  # Obtener el parámetro de fecha de inicio 'date_start' de la URL si está presente
-        date_end = request.GET.get('date_end', None)  # Obtener el parámetro de fecha de fin 'date_end' de la URL si está presente
-        if date_start and date_end:
-            books = books.filter(publication_date__range=[date_start, date_end])
+        query = request.GET.get("query_search")
+        date_start = request.GET.get("start")
+        date_end = request.GET.get("end")
+
         if query:
             books = books.filter(
                 Q(title__icontains=query) | Q(author__name__icontains=query)
-            )  # Filtrar libros por título que contenga la cadena de búsqueda (case-insensitive)
-            
-        paginator = Paginator(books, 5)  # Mostrar 5 libros por página
-        page_number = request.GET.get('page')  # Obtener el número de página de la URL
-        page_obj = paginator.get_page(page_number)  # Obtener los libros para la página actual y manejar errores automáticamente
+            )
 
-        query_params = request.GET.copy()  # Copiar los parámetros GET de la solicitud en un diccionario mutable
-        if 'page' in query_params:
-            del query_params['page']  # Eliminar el parámetro 'page' para mantener otros parámetros en la paginación
-            # query_params.pop("page", None)  # Eliminar el parámetro 'page' para mantener otros parámetros en la paginación
-        query_string = query_params.urlencode()  # Codificar los parámetros restantes en una cadena de consulta
-        
-        # author_id = request.GET.get('author', None)  # Obtener el parámetro author_id de la URL si está presente
-        # genre_id = request.GET.get('genre', None)  # Obtener el parámetro genre_id de la URL si está presente
-        # if author_id:
-        #     books = books.filter(author_id=author_id)  # Filtrar libros por el ID del autor si se proporciona: http://localhost:8000/minilibrary/?author=6
-        # if genre_id:
-        #     books = books.filter(genres__id=genre_id)  # Filtrar libros por el ID del género si se proporciona
-        return render(request, 'minilibrary/minilibrary.html', {
-            #  "text": "Bienvenido a la Mini Biblioteca",
-            #  "name": "Ricardo",
-            #  "author": author_id if author_id else "Invitado",
-             "page_obj": page_obj,
-             "query": query if query else "",
-             "query_string": query_string,
+        if date_start and date_end:
+            books = books.filter(publication_date__range=[
+                                 date_start, date_end])
+
+        paginator = Paginator(books, 5)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        query_params = request.GET.copy()
+        if "page" in query_params:
+            query_params.pop("page")
+        query_string = query_params.urlencode()
+
+        return render(request, "minilibrary/minilibrary.html", {
+            "page_obj": page_obj,
+            "query": query,
+            "query_string": query_string
         })
-    except Exception as e:
-        return HttpResponseNotFound(f"Error loading page: {e}")
-    
+    except Exception:
+        return HttpResponseNotFound("Página no encontrada")
+
+
 def add_review(request, book_id):
     book = get_object_or_404(Book, id=book_id)
-    form = ReviewSimpleForm(request.POST or None)
-    
+    form = ReviewForm(request.POST or None)
+
     if request.method == "POST":
         if form.is_valid():
-            rating = form.cleaned_data['rating'] # cleaned_data es un diccionario con los datos validados del formulario
-            text = form.cleaned_data['text']
-            user = request.user if request.user.is_authenticated else User.objects.first()
-            # Crear y guardar la reseña en la base de datos
-            review = Review.objects.create(
-                book=book,
-                user=user,
-                rating=rating,
-                text=text
-            )
-            messages.success(request, "Gracias por tu reseña")
-            return redirect("recomend_book", book_id=book.id)
+            review = form.save(commit=False)
+            review.book = book
+            review.user = request.user
+            review.save()
+            would_recommend = form.cleaned_data.get('would_recommend')
+            if would_recommend:
+                messages.success(
+                    request, "Gracias por la reseña y tu recomendación de nuestros libros")
+            else:
+                messages.success(request, "Gracias por la reseña")
+            return redirect("recommend_book", book_id=book.id)
         else:
-            messages.error(request, "Corrige los errores del formulario", "danger")
+            messages.error(
+                request, "Corrige los errores del formulario", "danger")
+
     return render(request, "minilibrary/add_review.html", {
         "form": form,
         "book": book
     })
-            
-    # form = ReviewForm(request.POST or None)
-
-    # if request.method == "POST":
-    #     if form.is_valid():
-    #         review = form.save(commit=False)
-    #         review.book = book
-    #         review.user = request.user
-    #         review.save()
-    #         would_recommend = form.cleaned_data.get('would_recommend')
-    #         if would_recommend:
-    #             messages.success(
-    #                 request, "Gracias por la reseña y tu recomendación de nuestros libros")
-    #         else:
-    #             messages.success(request, "Gracias por la reseña")
-    #         return redirect("recommend_book", book_id=book.id)
-    #     else:
-    #         messages.error(
-    #             request, "Corrige los errores del formulario", "danger")
-
-    # return render(request, "minilibrary/add_review.html", {
-    #     "form": form,
-    #     "book": book
-    # })

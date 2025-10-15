@@ -2060,3 +2060,194 @@ urlpatterns = [
 
 ## Sección 15. Function-Based Views (FBV) vs. Class-Based Views (CBV)
 
+La diferencia entre Function-Based Views (FBV) y Class-Based Views (CBV) en Django radica en la forma en que se estructuran y organizan las vistas. Las FBV son funciones simples que reciben una solicitud y devuelven una respuesta, mientras que las CBV son clases que permiten una mayor reutilización y organización del código, facilitando la implementación de vistas más complejas y basadas en la orientación a objetos.
+
+Las FBV es una función de Python que recibe una request y devuelve un HTTP Response (o un renderizado de una plantilla). Son simples y directas, ideales para vistas sencillas o cuando se necesita un control total sobre la lógica de la vista.
+
+```python
+# Function-Based View (FBV)
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Book
+
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'myapp/book_list.html', {'books': books})
+
+def hello(request):
+    return HttpResponse("Hello, world!")
+
+## En la urls.py
+from django.urls import path
+from .views import book_list, hello
+
+urlpatterns = [
+    path('books/', book_list, name='book_list'),
+    path('hello/', hello, name='hello'),
+]
+```
+
+Las CBV son clases que heredan de las vistas genéricas de Django, como `ListView`, `DetailView`, `CreateView`, etc y definen métodos para manejar diferentes tipos de solicitudes (GET, POST, etc). Permiten una mayor reutilización del código y una mejor organización, especialmente para vistas más complejas que requieren múltiples métodos o lógica compartida.
+
+```python
+# Class-Based View (CBV)
+from django.views.generic import ListView
+from django.views import View
+from django.http import HttpResponse
+from .models import Book
+
+class BookListView(ListView):
+    model = Book
+    template_name = 'myapp/book_list.html'
+    context_object_name = 'books'
+    paginate_by = 10  # Paginación: 10 libros por página
+
+class Hello(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("Hello, world!")
+
+## En la urls.py
+from django.urls import path
+from .views import BookListView
+
+urlpatterns = [
+    path('books/', BookListView.as_view(), name='book_list'),
+    path('hello/', Hello.as_view(), name='hello'),
+]
+```
+
+En este ejemplo, `BookListView` hereda de `ListView`, lo que proporciona automáticamente la funcionalidad para listar objetos del modelo `Book`, renderizar la plantilla especificada y manejar la paginación.
+
+### Template View
+
+`Template View` es una vista genérica basada en clases que se utiliza para renderizar una plantilla HTML sin necesidad de interactuar con un modelo o realizar lógica adicional. Es útil para páginas estáticas o cuando solo necesitas mostrar contenido sin procesar datos (ejmplo, una página de "Acerca de", "Contacto", etc.).
+
+```python
+# Template View
+from django.views.generic import TemplateView
+
+class HomePageView(TemplateView):
+    template_name = 'myapp/home.html'
+
+class WelcomeView(TemplateView):
+    template_name = 'myapp/welcome.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['message'] = 'Welcome to the site!'  # Agregar contexto adicional a la plantilla
+        context['total_books'] = Book.objects.count()  # Agregar información del usuario
+        context['user'] = self.request.user  # Agregar información del usuario
+        # Esto significa que en la plantilla 'myapp/welcome.html' se puede acceder a {{ message }}, {{ total_books }} y {{ user }}
+        return context
+
+## En la urls.py
+from django.urls import path
+from .views import HomePageView, WelcomeView
+
+urlpatterns = [
+    path('', HomePageView.as_view(), name='home'),
+    path('welcome/', WelcomeView.as_view(), name='welcome'),
+]
+```
+
+El contexto adicional que se agrega en el método `get_context_data` estará disponible en la plantilla renderizada, permitiendo personalizar el contenido mostrado al usuario. `context = super().get_context_data(**kwargs)` llama al método de la clase base para obtener el contexto predeterminado y luego se pueden agregar más datos al diccionario `context`.
+
+### ListView
+
+Una `ListView` es una vista genérica basada en clases que se utiliza para mostrar una lista de objetos de un modelo específico. Proporciona funcionalidades integradas como paginación, ordenamiento y filtrado, lo que facilita la creación de vistas que muestran múltiples registros de manera eficiente. Esta lista objetos de un modelo y los pasa a una plantilla para su renderizado, internamente hace una consulta al modelo para obtener todos los objetos `.all()` y los organiza en un contexto que se puede utilizar en la plantilla. Se usa cuando se necesita mostrar una lista de elementos, como una lista de libros, usuarios, productos, etc. y puede ser personalizada para incluir búsquedas y filtros, y cuando se quiera mostrar información de un modelo en particular.
+
+```python
+# ListView
+from django.views.generic import ListView
+from .models import Book
+class BookListView(ListView):
+    model = Book  # Especifica el modelo del que se obtendrán los objetos
+    template_name = 'myapp/book_list.html'  # Especifica la plantilla a utilizar
+    context_object_name = 'books'  # Nombre del contexto en la plantilla, por lo que podremos referenciar a la lista de libros como {{ books }} en la plantilla
+    paginate_by = 10  # Paginación: 10 libros por página
+
+    def get_queryset(self):
+        queryset = super().get_queryset()  # Obtener el queryset predeterminado
+        query = self.request.GET.get('query_search', None)  # Obtener el parámetro de búsqueda 'query_search' de la URL si está presente
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) | Q(author__name__icontains=query)
+            )  # Filtrar libros por título que contenga la cadena de búsqueda (case-insensitive)
+        return queryset
+```
+
+En este ejemplo, `BookListView` hereda de `ListView` y está configurada para mostrar una lista de objetos del modelo `Book`. La plantilla `myapp/book_list.html` se utilizará para renderizar la lista, y el contexto en la plantilla estará disponible bajo el nombre `books`. La paginación está configurada para mostrar 10 libros por página. Además, se ha sobrescrito el método `get_queryset` para permitir la búsqueda de libros por título o autor utilizando un parámetro de consulta `query_search`.
+
+Ejemplo de 'myapp/book_list.html' template:
+
+```html
+{% extends 'base.html' %} {% block content %}
+<h2>Libros disponibles</h2>
+<ul>
+  {% for book in books %}
+  <li><strong>{{book.title}}</strong> - {{book.author.name}}</li>
+  {% empty %}
+  <li>No hay libros disponibles.</li>
+
+  {% endfor %}
+</ul>
+{% if is_paginated %}
+<div>
+  {% if page_obj.has_previous %}
+  <a href="?page={{page_obj.previous_page_number}}">Anterior</a>
+  {% endif %}
+  <span>Página {{page_obj.number}} de {{page_obj.paginator.num_pages}}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{page_obj.next_page_number}}">Siguiente</a>
+  {% endif %}
+</div>
+{% endif %} {% endblock content %}
+```
+
+`is_paginated`, `page_obj.has_previous`, `page_obj.has_next`, `page_obj.paginator.num_pages` están definidos para funcionar con Django templates y CBV.
+
+### DetailView
+
+`DetailView` es una vista basada en clase que muestra los detalles de un solo registro, se basa en una llave primaria o un slug. Usa una plantilla model_detail pero puede cambiar. Se usa cuando se quiera mostrar información de un solo objeto.
+
+```python
+from django.views.generic import DetailView
+from .models import Book
+
+class BookDetailView(DetailView):
+    model = Book
+    template_name = "minilibrary/book_detail.html"
+    context_object_name = "book" # Le dice a Django que se desea usar en las plantillas "book" como objeto de contexto.
+    # slug_field = "slug" # Sí se ocupan slugs y en la url se pondría path('books/<slug:slug>/', BookDetailView.as_view(), name='book_detail')
+    # slug_url_karg = "slug"
+```
+
+Ejemplo de "minilibrary/book_detail.html" template:
+
+```html
+{% extends 'base.html' %} {% block content %}
+
+<h2>{{book.title}}</h2>
+<p>Author: {{book.author.name}}</p>
+<p>Páginas: {{book.pages}}</p>
+<p>Fecha de publicación: {{book.publication_date}}</p>
+<p>ISBN: {{book.isbn}}</p>
+
+{% if book.detail %}
+<hr />
+<p>Resumen: {{book.detail.summary}}</p>
+<p>Idioma: {{book.detail.language}}</p>
+{% endif %}
+
+<a href="{% url 'book_list' %}">Volver a la lista</a>
+
+{% endblock content %}
+```
+
+`urls.py`:
+
+```python
+...
+    path('books/<int:pk>/', BookDetailView.as_view(), name='book_detail')
+...
+```
